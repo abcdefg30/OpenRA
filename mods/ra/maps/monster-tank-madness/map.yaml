@@ -1862,15 +1862,12 @@ Actors:
 	stnk1: 5tnk
 		Location: 89,59
 		Owner: Turkey
-		Facing: 0
 	stnk2: 5tnk
 		Location: 77,57
 		Owner: Turkey
-		Facing: 0
 	stnk3: 5tnk
 		Location: 94,53
 		Owner: Turkey
-		Facing: 0
 	Actor588: v2rl
 		Location: 91,75
 		Owner: USSR

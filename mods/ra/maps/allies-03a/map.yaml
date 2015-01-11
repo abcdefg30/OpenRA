@@ -909,7 +909,6 @@ Actors:
 	USSRBaseGuard3: e2
 		Location: 48,70
 		Owner: USSR
-		Facing: 0
 		SubCell: 4
 	USSRBaseGuard4: e2
 		Location: 49,69
@@ -969,7 +968,6 @@ Actors:
 	USSRBaseGuard13: e2
 		Location: 80,76
 		Owner: USSR
-		Facing: 0
 		SubCell: 0
 	USSRBaseGuard14: dog
 		Location: 81,76
@@ -1086,7 +1084,6 @@ Actors:
 	PrisonedMedi1: medi
 		Location: 58,60
 		Owner: Greece
-		Facing: 0
 		SubCell: 0
 	Actor309: fenc
 		Location: 72,63

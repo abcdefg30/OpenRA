@@ -470,7 +470,6 @@ Actors:
 	HiddenBuggy: bggy
 		Location: 6,25
 		Owner: Nod
-		Facing: 0
 	Actor137: bggy
 		Location: 21,30
 		Owner: Nod
