@@ -458,4 +458,112 @@ Player:
 				Attractiveness: -10
 				TargetMetric: Value
 				CheckRadius: 7c0
+	HackyAI@TroopAI:
+		Name: Troop AI
+		BuildingCommonNames:
+			ConstructionYard: fact
+			Refinery: proc
+			Power: powr,apwr
+			Barracks: barr,tent
+			VehiclesFactory: weap
+			Production: barr,tent,weap
+			Silo: silo
+		UnitsCommonNames:
+			Mcv: mcv
+		BuildingLimits:
+			proc: 5
+			dome: 1
+			weap: 1
+			barr: 4
+			tent: 4
+		BuildingFractions:
+			proc: 50%
+			powr: 1%
+			apwr: 10%
+			tent: 98%
+			barr: 98%
+			dome: 0.1%
+			weap: 0.1%
+			pbox: 10%
+			gun: 7%
+			ftur: 10%
+			tsla: 5%
+			agun: 5%
+			sam: 5%
+		UnitsToBuild:
+			e1: 68%
+			e3: 29%
+			e4: 2%
+			medi: 1%
+			harv: 1%
+		SquadSize: 64
+		MaxBaseRadius: 15
+		ShouldRepairBuildings: true
+		IdleBaseUnitsMaximum: 3
+		RushInterval: 3000
+		AssignRolesInterval: 75
+		AttackForceInterval: 75
+		SupportPowerDecision@spyplane:
+			OrderName: SovietSpyPlane
+			MinimumAttractiveness: 1
+			Consideration@1:
+				Against: Enemy
+				Types: Structure
+				Attractiveness: 1
+				TargetMetric: None
+				CheckRadius: 5c0
+		SupportPowerDecision@paratroopers:
+			OrderName: SovietParatroopers
+			MinimumAttractiveness: 5
+			Consideration@1:
+				Against: Enemy
+				Types: Structure
+				Attractiveness: 1
+				TargetMetric: None
+				CheckRadius: 10c0
+			Consideration@2:
+				Against: Enemy
+				Types: Vehicle, Tank, Infantry, Defense
+				Attractiveness: -10
+				TargetMetric: None
+				CheckRadius: 10c0
+		SupportPowerDecision@armordrop:
+			OrderName: RussiaArmorDrop
+			MinimumAttractiveness: 5
+			Consideration@1:
+				Against: Enemy
+				Types: Structure
+				Attractiveness: 1
+				TargetMetric: None
+				CheckRadius: 10c0
+			Consideration@2:
+				Against: Enemy
+				Types: Vehicle, Tank, Infantry, Defense
+				Attractiveness: -10
+				TargetMetric: None
+				CheckRadius: 10c0
+		SupportPowerDecision@parabombs:
+			OrderName: UkraineParabombs
+			MinimumAttractiveness: 1
+			Consideration@1:
+				Against: Enemy
+				Types: Structure
+				Attractiveness: 1
+				TargetMetric: None
+				CheckRadius: 5c0
+		SupportPowerDecision@nukepower:
+			OrderName: NukePowerInfoOrder
+			MinimumAttractiveness: 3000
+			Consideration@1:
+				Against: Enemy
+				Types: Structure
+				Attractiveness: 1
+				TargetMetric: Value
+				CheckRadius: 5c0
+			Consideration@2:
+				Against: Ally
+				Types: Air, Ground, Water
+				Attractiveness: -10
+				TargetMetric: Value
+				CheckRadius: 7c0
 
