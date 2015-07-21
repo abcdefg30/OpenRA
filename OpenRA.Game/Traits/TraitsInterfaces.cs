@@ -97,7 +97,6 @@ namespace OpenRA.Traits
 	public interface INotifySold { void Selling(Actor self); void Sold(Actor self); }
 	public interface INotifyDamage { void Damaged(Actor self, AttackInfo e); }
 	public interface INotifyDamageStateChanged { void DamageStateChanged(Actor self, AttackInfo e); }
-	public interface INotifyRepair { void Repairing(Actor self, Actor host); }
 	public interface INotifyKilled { void Killed(Actor self, AttackInfo e); }
 	public interface INotifyActorDisposing { void Disposing(Actor self); }
 	public interface INotifyAppliedDamage { void AppliedDamage(Actor self, Actor damaged, AttackInfo e); }
@@ -112,6 +111,13 @@ namespace OpenRA.Traits
 	public interface INotifyInfiltrated { void Infiltrated(Actor self, Actor infiltrator); }
 	public interface INotifyDiscovered { void OnDiscovered(Actor self, Player discoverer, bool playNotification); }
 	public interface IDisableMove { bool MoveDisabled(Actor self); }
+
+	public interface INotifyRepair
+	{
+		void StartRepairing(Actor self, Actor host);
+		void Repairing(Actor self, Actor host);
+		void FinishRepairing(Actor self, Actor host);
+	}
 
 	public interface ISeedableResource { void Seed(Actor self); }
 

@@ -21,7 +21,7 @@ namespace OpenRA.Mods.Common.Activities
 		readonly Actor host;
 		int remainingTicks;
 		Health health;
-		bool played = false;
+		bool initialized = false;
 
 		public Repair(Actor host)
 		{
@@ -31,29 +31,44 @@ namespace OpenRA.Mods.Common.Activities
 
 		public override Activity Tick(Actor self)
 		{
-			if (IsCanceled) return NextActivity;
-			if (host == null || !host.IsInWorld) return NextActivity;
+			if (IsCanceled || host == null || !host.IsInWorld)
+			{
+				foreach (var depot in host.TraitsImplementing<INotifyRepair>())
+					depot.FinishRepairing(self, host);
+
+				return NextActivity;
+			}
 
 			health = self.TraitOrDefault<Health>();
-			if (health == null) return NextActivity;
+			if (health == null)
+				return NextActivity;
 
 			if (health.DamageState == DamageState.Undamaged)
 			{
 				Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", repairsUnits.FinishRepairingNotification, self.Owner.Faction.InternalName);
+
+				foreach (var depot in host.TraitsImplementing<INotifyRepair>())
+					depot.FinishRepairing(self, host);
+
 				return NextActivity;
 			}
 
 			if (remainingTicks == 0)
 			{
+				if (!initialized)
+				{
+					initialized = true;
+					Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", repairsUnits.StartRepairingNotification, self.Owner.Faction.InternalName);
+
+					foreach (var depot in host.TraitsImplementing<INotifyRepair>())
+						depot.StartRepairing(self, host);
+
+					return this;
+				}
+
 				var unitCost = self.Info.Traits.Get<ValuedInfo>().Cost;
 				var hpToRepair = repairsUnits.HpPerStep;
 				var cost = Math.Max(1, (hpToRepair * unitCost * repairsUnits.ValuePercentage) / (health.MaxHP * 100));
-
-				if (!played)
-				{
-					played = true;
-					Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", repairsUnits.StartRepairingNotification, self.Owner.Faction.InternalName);
-				}
 
 				if (!self.Owner.PlayerActor.Trait<PlayerResources>().TakeCash(cost))
 				{

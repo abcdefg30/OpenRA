@@ -18,8 +18,14 @@ namespace OpenRA.Mods.Common.Traits
 	[Desc("Displays an overlay when the building is being repaired by the player.")]
 	public class WithRepairOverlayInfo : ITraitInfo, Requires<RenderSpritesInfo>, Requires<IBodyOrientationInfo>
 	{
-		[Desc("Sequence name to use")]
+		[Desc("Sequence name to use while repairing.")]
 		[SequenceReference] public readonly string Sequence = "active";
+
+		[Desc("Sequence name to use when starting the repair activity.")]
+		[SequenceReference] public readonly string StartSequence = null;
+
+		[Desc("Sequence name to use when finishing the repair activity.")]
+		[SequenceReference] public readonly string FinishSequence = null;
 
 		[Desc("Position relative to body")]
 		public readonly WVec Offset = WVec.Zero;
@@ -37,15 +43,19 @@ namespace OpenRA.Mods.Common.Traits
 
 	public class WithRepairOverlay : INotifyDamageStateChanged, INotifyBuildComplete, INotifySold, INotifyRepair
 	{
-		Animation overlay;
+		readonly Animation overlay;
+		readonly WithRepairOverlayInfo info;
 		bool buildComplete;
 
 		public WithRepairOverlay(Actor self, WithRepairOverlayInfo info)
 		{
+			this.info = info;
+
 			var rs = self.Trait<RenderSprites>();
 			var body = self.Trait<IBodyOrientation>();
 
-			buildComplete = !self.HasTrait<Building>(); // always render instantly for units
+			// Always render instantly for units
+			buildComplete = !self.HasTrait<Building>();
 			overlay = new Animation(self.World, rs.GetImage(self));
 			overlay.Play(info.Sequence);
 
@@ -75,9 +85,21 @@ namespace OpenRA.Mods.Common.Traits
 			overlay.ReplaceAnim(RenderSprites.NormalizeSequence(overlay, e.DamageState, overlay.CurrentSequence.Name));
 		}
 
+		public void StartRepairing(Actor self, Actor host)
+		{
+			if (info.StartSequence != null)
+				overlay.Play(info.StartSequence);
+		}
+
 		public void Repairing(Actor self, Actor host)
 		{
-			overlay.Play(overlay.CurrentSequence.Name);
+			overlay.Play(info.Sequence);
+		}
+
+		public void FinishRepairing(Actor self, Actor host)
+		{
+			if (info.FinishSequence != null)
+				overlay.Play(info.FinishSequence);
 		}
 	}
 }
