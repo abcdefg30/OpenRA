@@ -63,6 +63,7 @@ namespace OpenRA.Mods.Common.Activities
 					foreach (var depot in host.TraitsImplementing<INotifyRepair>())
 						depot.StartRepairing(self, host);
 
+					remainingTicks = repairsUnits.InitialDelay;
 					return this;
 				}
 

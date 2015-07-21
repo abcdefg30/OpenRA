@@ -26,6 +26,9 @@ namespace OpenRA.Mods.Common.Traits
 
 		[Desc("The sound played when repairing a unit is done.")]
 		public readonly string FinishRepairingNotification = null;
+
+		[Desc("Delay before the first repair step runs.")]
+		public readonly int InitialDelay = 0;
 	}
 
 	public class RepairsUnits { }
