@@ -112,7 +112,7 @@ namespace OpenRA.Traits
 	public interface INotifyDiscovered { void OnDiscovered(Actor self, Player discoverer, bool playNotification); }
 	public interface IDisableMove { bool MoveDisabled(Actor self); }
 
-	public interface INotifyRepair
+	public interface INotifyBeingRepaired
 	{
 		void StartRepairing(Actor self, Actor host);
 		void Repairing(Actor self, Actor host);

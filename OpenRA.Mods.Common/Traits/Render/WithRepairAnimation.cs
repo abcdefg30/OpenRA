@@ -31,7 +31,7 @@ namespace OpenRA.Mods.Common.Traits
 		public object Create(ActorInitializer init) { return new WithRepairAnimation(init.Self, this); }
 	}
 
-	public class WithRepairAnimation : INotifyRepair
+	public class WithRepairAnimation : INotifyBeingRepaired
 	{
 		readonly WithRepairAnimationInfo info;
 

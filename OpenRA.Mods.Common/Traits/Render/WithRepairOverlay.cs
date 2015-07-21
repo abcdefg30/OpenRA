@@ -41,7 +41,7 @@ namespace OpenRA.Mods.Common.Traits
 		public object Create(ActorInitializer init) { return new WithRepairOverlay(init.Self, this); }
 	}
 
-	public class WithRepairOverlay : INotifyDamageStateChanged, INotifyBuildComplete, INotifySold, INotifyRepair
+	public class WithRepairOverlay : INotifyDamageStateChanged, INotifyBuildComplete, INotifySold, INotifyBeingRepaired
 	{
 		readonly Animation overlay;
 		readonly WithRepairOverlayInfo info;

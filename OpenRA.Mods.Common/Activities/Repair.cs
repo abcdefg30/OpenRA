@@ -33,7 +33,7 @@ namespace OpenRA.Mods.Common.Activities
 		{
 			if (IsCanceled || host == null || !host.IsInWorld)
 			{
-				foreach (var depot in host.TraitsImplementing<INotifyRepair>())
+				foreach (var depot in host.TraitsImplementing<INotifyBeingRepaired>())
 					depot.FinishRepairing(self, host);
 
 				return NextActivity;
@@ -47,7 +47,7 @@ namespace OpenRA.Mods.Common.Activities
 			{
 				Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", repairsUnits.FinishRepairingNotification, self.Owner.Faction.InternalName);
 
-				foreach (var depot in host.TraitsImplementing<INotifyRepair>())
+				foreach (var depot in host.TraitsImplementing<INotifyBeingRepaired>())
 					depot.FinishRepairing(self, host);
 
 				return NextActivity;
@@ -60,7 +60,7 @@ namespace OpenRA.Mods.Common.Activities
 					initialized = true;
 					Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", repairsUnits.StartRepairingNotification, self.Owner.Faction.InternalName);
 
-					foreach (var depot in host.TraitsImplementing<INotifyRepair>())
+					foreach (var depot in host.TraitsImplementing<INotifyBeingRepaired>())
 						depot.StartRepairing(self, host);
 
 					remainingTicks = repairsUnits.InitialDelay;
@@ -79,7 +79,7 @@ namespace OpenRA.Mods.Common.Activities
 
 				self.InflictDamage(self, -hpToRepair, null);
 
-				foreach (var depot in host.TraitsImplementing<INotifyRepair>())
+				foreach (var depot in host.TraitsImplementing<INotifyBeingRepaired>())
 					depot.Repairing(self, host);
 
 				remainingTicks = repairsUnits.Interval;
