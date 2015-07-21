@@ -321,6 +321,12 @@ fix:
 		Length: 6
 		Offset: 0,1
 		ZOffset: -1c511
+	expl: veh-hit2
+		Length: *
+		Offset: 0,1
+	spl: h2o_exp1
+		Length: *
+		Offset: 0,1
 	damaged-active:
 		Start: 8
 		Length: 6

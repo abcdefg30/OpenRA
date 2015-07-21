@@ -1506,7 +1506,12 @@ FIX:
 	RepairsUnits:
 		Interval: 10
 		FinishRepairingNotification: UnitRepaired
-	WithRepairAnimation:
+		InitialDelay: 20
+	WithRepairOverlay: # WithRepairAnimation:
+		Palette: effect
+		Sequence: expl
+		StartSequence: spl
+		FinishSequence: spl
 	Power:
 		Amount: -30
 	ProvidesPrerequisite@buildingname:
