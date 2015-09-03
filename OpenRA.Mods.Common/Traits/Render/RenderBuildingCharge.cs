@@ -23,7 +23,7 @@ namespace OpenRA.Mods.Common.Traits
 
 	public class RenderBuildingCharge : RenderBuilding, INotifyCharging
 	{
-		RenderBuildingChargeInfo info;
+		readonly RenderBuildingChargeInfo info;
 
 		public RenderBuildingCharge(ActorInitializer init, RenderBuildingChargeInfo info)
 			: base(init, info)
