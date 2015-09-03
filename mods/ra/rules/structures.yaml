@@ -43,6 +43,8 @@ MSLO:
 	RequiresPower:
 	DisabledOverlay:
 	SupportPowerChargeBar:
+	-RenderBuilding:
+	RenderSupportPower:
 	Power:
 		Amount: -150
 	MustBeDestroyed:
@@ -365,6 +367,8 @@ PDOX:
 		DisplayRadarPing: True
 		Range: 2
 	SupportPowerChargeBar:
+	-RenderBuilding:
+	RenderSupportPower:
 	-AcceptsSupplies:
 	Power:
 		Amount: -200
@@ -761,6 +765,9 @@ ATEK:
 		LaunchSound: satlnch1.aud
 		DisplayTimer: True
 	SupportPowerChargeBar:
+	WithSupportPowerOverlay:
+		ChargeSequence: charge
+		Palette: effect
 	RequiresPower:
 	DisabledOverlay:
 	Power:

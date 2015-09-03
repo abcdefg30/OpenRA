@@ -112,10 +112,19 @@ namespace OpenRA.Mods.RA.Traits
 			self.World.AddFrameEndTask(w =>
 			{
 				Sound.PlayToPlayer(self.Owner, Info.LaunchSound);
-
-				w.Add(new SatelliteLaunch(self));
-
 				owner.Launch(self, Info);
+
+				foreach (var sa in self.TraitsImplementing<INotifySupportPowerStuff>())
+					sa.Charging(self);
+
+				// HACK: I'm ugly
+				// Also: 19 * 40 because we want 19 frames, one frame seems to be 40 Ticks
+				// Actually we want 16, because it looks better, so this was changed from 19 to 16
+				Game.RunAfterDelay(16 * 40, () =>
+				{
+					foreach (var sa in self.TraitsImplementing<INotifySupportPowerStuff>())
+						sa.Active(self, true);
+				});
 			});
 		}
 

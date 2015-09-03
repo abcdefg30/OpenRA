@@ -79,8 +79,6 @@
     <Compile Include="Activities\Leap.cs" />
     <Compile Include="Activities\Teleport.cs" />
     <Compile Include="Effects\GpsDot.cs" />
-    <Compile Include="Effects\GpsSatellite.cs" />
-    <Compile Include="Effects\SatelliteLaunch.cs" />
     <Compile Include="Effects\TeslaZap.cs" />
     <Compile Include="Graphics\TeslaZapRenderable.cs" />
     <Compile Include="Scripting\Properties\InfiltrateProperties.cs" />

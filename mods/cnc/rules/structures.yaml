@@ -621,6 +621,8 @@ TMPL:
 		DisplayRadarPing: True
 		CameraActor: camera
 	SupportPowerChargeBar:
+	-RenderBuilding:
+	RenderSupportPower:
 	Power:
 		Amount: -150
 	ProvidesPrerequisite@buildingname:

@@ -201,8 +201,11 @@ atek:
 		Start: 1
 	make: atekmake
 		Length: *
-	active: sputdoor
-		Length: *
+	charge: sputdoor
+		Length: 34
+		Offset: -4,0
+	active: sputnik
+		Length: 4
 		Offset: -4,0
 	bib: bib3
 		Length: *

@@ -191,11 +191,6 @@ tabs:
 	left-pressed:
 		Start: 1
 
-sputnik:
-	idle:
-		Length: *
-		Offset: -4,0
-
 dd-crnr:
 	idle:
 		Length: *

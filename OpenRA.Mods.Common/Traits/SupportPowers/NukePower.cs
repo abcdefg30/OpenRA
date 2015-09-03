@@ -72,7 +72,10 @@ namespace OpenRA.Mods.Common.Traits
 				Sound.Play(Info.IncomingSound);
 
 			var rb = self.Trait<RenderSimple>();
-			rb.PlayCustomAnim(self, "active");
+
+			// TODO: We don't want to start the missile while the silo still opens
+			foreach (var sa in self.TraitsImplementing<INotifySupportPowerStuff>())
+				sa.Active(self);
 
 			var targetPosition = self.World.Map.CenterOfCell(order.TargetLocation);
 			var missile = new NukeLaunch(self.Owner, info.MissileWeapon,

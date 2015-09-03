@@ -107,4 +107,11 @@ namespace OpenRA.Mods.Common.Traits
 		void MovementCancelled(Actor self);
 		void RequestTransport(CPos destination, Activity afterLandActivity);
 	}
+
+	// TODO: Shitty name
+	public interface INotifySupportPowerStuff
+	{
+		void Active(Actor self, bool ascending = false);
+		void Charging(Actor self);
+	}
 }

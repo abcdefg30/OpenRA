@@ -16,6 +16,11 @@ namespace OpenRA.Mods.Common.Traits
 	{
 		[Desc("Measured in seconds.")]
 		public readonly int ChargeTime = 0;
+
+		// TODO: Stupid name and desc
+		[Desc("Time when the charge sequence is played. Set to 0 to ingore.")]
+		public readonly int ChargeActiveTime = 0;
+
 		public readonly string Icon = null;
 		public readonly string Description = "";
 		public readonly string LongDesc = "";

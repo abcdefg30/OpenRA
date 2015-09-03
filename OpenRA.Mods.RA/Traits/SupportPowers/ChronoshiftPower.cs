@@ -54,6 +54,9 @@ namespace OpenRA.Mods.RA.Traits
 				if (self.Owner.Shroud.IsExplored(targetCell) && cs.CanChronoshiftTo(target, targetCell))
 					cs.Teleport(target, targetCell, cpi.Duration * 25, cpi.KillCargo, self);
 			}
+
+			foreach (var sa in self.TraitsImplementing<INotifySupportPowerStuff>())
+				sa.Active(self);
 		}
 
 		public IEnumerable<Actor> UnitsInRange(CPos xy)
