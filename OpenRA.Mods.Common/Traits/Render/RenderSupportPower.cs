@@ -34,9 +34,10 @@ namespace OpenRA.Mods.Common.Traits.Render
 			this.info = info;
 		}
 
-		public void Active(Actor self, bool ascending = false)
+		public void Active(Actor self)
 		{
-			PlayCustomAnim(self, info.ActiveSequence);
+			if (info.ActiveSequence != null)
+				PlayCustomAnim(self, info.ActiveSequence);
 		}
 
 		public void Charging(Actor self)

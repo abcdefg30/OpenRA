@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenRA.Effects;
 using OpenRA.Mods.Common.Traits;
-using OpenRA.Mods.RA.Effects;
 using OpenRA.Traits;
 
 namespace OpenRA.Mods.RA.Traits
@@ -48,12 +47,11 @@ namespace OpenRA.Mods.RA.Traits
 
 		public void Launch(Actor atek, SupportPowerInfo info)
 		{
-			atek.World.Add(new DelayedAction(((GpsPowerInfo)info).RevealDelay * 25,
-					() =>
-					{
-						Launched = true;
-						RefreshGps(atek);
-					}));
+			atek.World.Add(new DelayedAction(((GpsPowerInfo)info).RevealDelay * 25, () =>
+			{
+				Launched = true;
+				RefreshGps(atek);
+			}));
 		}
 
 		public void RefreshGps(Actor atek)
@@ -84,6 +82,8 @@ namespace OpenRA.Mods.RA.Traits
 
 	class GpsPowerInfo : SupportPowerInfo
 	{
+		// TODO: Use ticks instead of seconds
+		[Desc("Measured in seconds.")]
 		public readonly int RevealDelay = 0;
 
 		public override object Create(ActorInitializer init) { return new GpsPower(init.Self, this); }
@@ -115,16 +115,10 @@ namespace OpenRA.Mods.RA.Traits
 				owner.Launch(self, Info);
 
 				foreach (var sa in self.TraitsImplementing<INotifySupportPowerStuff>())
-					sa.Charging(self);
+					sa.Active(self);
 
-				// HACK: I'm ugly
-				// Also: 19 * 40 because we want 19 frames, one frame seems to be 40 Ticks
-				// Actually we want 16, because it looks better, so this was changed from 19 to 16
-				Game.RunAfterDelay(16 * 40, () =>
-				{
-					foreach (var sa in self.TraitsImplementing<INotifySupportPowerStuff>())
-						sa.Active(self, true);
-				});
+				foreach (var ml in self.TraitsImplementing<INotifyMissileLaunch>())
+					ml.MissileLaunch(self);
 			});
 		}
 

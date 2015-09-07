@@ -201,10 +201,10 @@ atek:
 		Start: 1
 	make: atekmake
 		Length: *
-	charge: sputdoor
+	active: sputdoor
 		Length: 34
 		Offset: -4,0
-	active: sputnik
+	missileUp: sputnik
 		Length: 4
 		Offset: -4,0
 	bib: bib3
@@ -553,6 +553,13 @@ mslo:
 	damaged-active:
 		Start: 9
 		Length: 7
+	missileUp: atomicup
+		Length: 3
+		Offset: 10,0
+		UseTilesetExtension: false
+	missileDown: atomicdn
+		Length: 3
+		UseTilesetExtension: false
 	icon: msloicon2
 		UseTilesetExtension: false
 	fake-icon: mslficon

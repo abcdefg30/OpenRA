@@ -111,7 +111,12 @@ namespace OpenRA.Mods.Common.Traits
 	// TODO: Shitty name
 	public interface INotifySupportPowerStuff
 	{
-		void Active(Actor self, bool ascending = false);
+		void Active(Actor self);
 		void Charging(Actor self);
+	}
+
+	public interface INotifyMissileLaunch
+	{
+		void MissileLaunch(Actor self, int flightDelay = 0, WPos targetPos = new WPos(), bool skipAscent = false);
 	}
 }

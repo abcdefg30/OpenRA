@@ -43,8 +43,12 @@ MSLO:
 	RequiresPower:
 	DisabledOverlay:
 	SupportPowerChargeBar:
-	-RenderBuilding:
-	RenderSupportPower:
+	#-RenderBuilding:
+	#RenderSupportPower:
+	WithSupportPowerOverlay:
+	WithMissileLaunch:
+		DescendSequence: missileDown
+		LaunchDelay: 290
 	Power:
 		Amount: -150
 	MustBeDestroyed:
@@ -766,8 +770,8 @@ ATEK:
 		DisplayTimer: True
 	SupportPowerChargeBar:
 	WithSupportPowerOverlay:
-		ChargeSequence: charge
-		Palette: effect
+	WithMissileLaunch:
+		LaunchDelay: 640
 	RequiresPower:
 	DisabledOverlay:
 	Power:
