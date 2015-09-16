@@ -17,14 +17,21 @@ namespace OpenRA.Mods.Common.Traits
 	[Desc("This actor is crushable.")]
 	class CrushableInfo : ITraitInfo
 	{
+		// TODO: Remove, sound is at weapon now
 		[Desc("Sound to play when being crushed.")]
 		public readonly string CrushSound = null;
+
 		[Desc("Which crush classes does this actor belong to.")]
 		public readonly HashSet<string> CrushClasses = new HashSet<string> { "infantry" };
+
 		[Desc("Probability of mobile actors noticing and evading a crush attempt.")]
 		public readonly int WarnProbability = 75;
+
 		[Desc("Will friendly units just crush me instead of pathing around.")]
 		public readonly bool CrushedByFriendlies = false;
+
+		[WeaponReference, FieldLoader.Require, Desc("Weapon to use for crushing.")]
+		public readonly string Weapon = "Crush";
 
 		public object Create(ActorInitializer init) { return new Crushable(init.Self, this); }
 	}
@@ -33,11 +40,13 @@ namespace OpenRA.Mods.Common.Traits
 	{
 		readonly Actor self;
 		readonly CrushableInfo info;
+		readonly HealthInfo healthInfo;
 
 		public Crushable(Actor self, CrushableInfo info)
 		{
 			this.self = self;
 			this.info = info;
+			healthInfo = self.Info.Traits.GetOrDefault<HealthInfo>();
 		}
 
 		public void WarnCrush(Actor crusher)
@@ -49,6 +58,9 @@ namespace OpenRA.Mods.Common.Traits
 
 		public void OnCrush(Actor crusher)
 		{
+			if (healthInfo == null)
+				return;
+
 			Sound.Play(info.CrushSound, crusher.CenterPosition);
 			var wda = self.TraitsImplementing<WithDeathAnimation>()
 				.FirstOrDefault(s => s.Info.CrushedSequence != null);
@@ -60,8 +72,15 @@ namespace OpenRA.Mods.Common.Traits
 
 				wda.SpawnDeathAnimation(self, wda.Info.CrushedSequence, palette);
 			}
+			
+			var weapon = crusher.World.Map.Rules.Weapons[info.Weapon.ToLowerInvariant()];
+			if (weapon.Report != null && weapon.Report.Any())
+				Sound.Play(weapon.Report.Random(crusher.World.SharedRandom), self.CenterPosition);
 
-			self.Kill(crusher);
+			// Use .FromPos since this actor is killed. Cannot use Target.FromActor
+			//weapon.Impact(Target.FromPos(self.CenterPosition), crusher, Enumerable.Empty<int>());
+
+			weapon.Impact(Target.FromActor(self), crusher, Enumerable.Empty<int>());
 		}
 
 		public bool CrushableBy(HashSet<string> crushClasses, Player crushOwner)

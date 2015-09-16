@@ -31,7 +31,7 @@ namespace OpenRA.Mods.Common.Traits
 		[Desc("Chance that this actor will explode at all.")]
 		public readonly int Chance = 100;
 
-		[Desc("DeathType(s) to apply upon explosion.")]
+		[Desc("DeathType(s) that trigger the explosion. Leave empty to always trigger an explosion.")]
 		public readonly HashSet<string> DeathType = new HashSet<string>();
 
 		public object Create(ActorInitializer init) { return new Explodes(this); }

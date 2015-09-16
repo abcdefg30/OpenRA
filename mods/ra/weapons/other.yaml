@@ -278,3 +278,6 @@ MADTankDetonate:
 		Explosion: med_explosion
 		ImpactSound: mineblo1.aud
 
+Crush:
+	Warhead: Crush
+		DamageTypes: CrushDeath
