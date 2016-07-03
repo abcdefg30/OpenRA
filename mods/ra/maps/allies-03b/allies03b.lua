@@ -366,4 +366,34 @@ WorldLoaded = function()
 	InitObjectives()
 	InitTriggers()
 	SetupAlliedUnits()
+
+	Trigger.AfterDelay(DateTime.Seconds(3), function()
+		Media.DisplayMessage("test1")
+		Weather.ParticleDensityFactor = 1000
+		Weather.ChangingWindLevel = false
+		Weather.WindLevels = { -2, 0, 2 }
+		Weather.WindTick = { 10, 10 }
+		Weather.InstantWindChanges = true
+		Weather.UseSquares = true
+		Weather.ParticleSize = { 2, 2 }
+		Weather.ScatterDirection = { 1, 1 }
+	end)
+
+	Trigger.AfterDelay(DateTime.Seconds(6), function()
+		Media.DisplayMessage("test2")
+		Media.DisplayMessage("SwingOffset | x: " .. Weather.SwingOffset[1] .. "y: " .. Weather.SwingOffset[2])
+		Weather.SwingOffset = { 2000, 2000 }
+		Media.DisplayMessage("SwingSpeed | x: " .. Weather.SwingSpeed[1] .. "y: " .. Weather.SwingSpeed[2])
+		Weather.SwingSpeed = { 5000, 5000 }
+		Media.DisplayMessage("SwingAmplitude | x: " .. Weather.SwingAmplitude[1] .. "y: " .. Weather.SwingAmplitude[2])
+		Weather.SwingAmplitude = { 1000, 1000 }
+	end)
+
+	Trigger.AfterDelay(DateTime.Seconds(9), function()
+		Media.DisplayMessage("test3")
+		Weather.Gravity = { 50, 60 }
+		Weather.ParticleColors = { HSLColor.FromHex("FFFFFF"), HSLColor.FromHex("000000") }
+		Weather.UseSquares = false
+		Weather.LineTailAlphaValue = 255
+	end)
 end
