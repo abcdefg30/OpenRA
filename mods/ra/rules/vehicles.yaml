@@ -277,9 +277,20 @@ HARV:
 		HP: 600
 	Armor:
 		Type: Heavy
-	Mobile:
-		Speed: 85
-		Crushes: wall, mine, crate, infantry
+	-Mobile:
+	#	Speed: 85
+	#	Crushes: wall, mine, crate, infantry
+	Aircraft:
+		CruiseAltitude: 560
+		TurnSpeed: 5
+		Speed: 149
+		CanHover: True
+		CruisingCondition: cruising
+	Hovers@CRUISING:
+		RequiresCondition: cruising
+	WithShadow:
+		Offset: 43, 128, 0
+		ZOffset: -129
 	RevealsShroud:
 		Range: 4c0
 	WithHarvestAnimation:
