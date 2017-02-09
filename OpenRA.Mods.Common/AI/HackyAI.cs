@@ -766,9 +766,23 @@ namespace OpenRA.Mods.Common.AI
 		CPos FindNextResource(Actor harvester)
 		{
 			var harvInfo = harvester.Info.TraitInfo<HarvesterInfo>();
-			var mobileInfo = harvester.Info.TraitInfo<MobileInfo>();
-			var passable = (uint)mobileInfo.GetMovementClass(World.Map.Rules.TileSet);
+			if (harvester.CanHarvestAt(harvester.Location, resLayer, harvInfo, territory))
+				return harvester.Location;
 
+			var mobileInfo = harvester.Info.TraitInfoOrDefault<MobileInfo>();
+
+			// The harvester is not a normal vehicle, but instead e.g. an aircraft
+			if (mobileInfo == null)
+			{
+				var map = harvester.World.Map;
+				foreach (var tile in map.FindTilesInAnnulus(harvester.Location, 1, 50))
+					if (harvester.CanHarvestAt(tile, resLayer, harvInfo, territory))
+						return tile;
+
+				return CPos.Zero;
+			}
+
+			var passable = (uint)mobileInfo.GetMovementClass(World.Map.Rules.TileSet);
 			var path = pathfinder.FindPath(
 				PathSearch.Search(World, mobileInfo, harvester, true,
 					loc => domainIndex.IsPassable(harvester.Location, loc, mobileInfo, passable) && harvester.CanHarvestAt(loc, resLayer, harvInfo, territory))

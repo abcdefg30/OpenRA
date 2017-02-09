@@ -22,6 +22,8 @@ namespace OpenRA.Mods.Common.Activities
 	{
 		readonly Harvester harv;
 		readonly HarvesterInfo harvInfo;
+		readonly IMove move;
+		readonly IMoveInfo moveInfo;
 		readonly Mobile mobile;
 		readonly MobileInfo mobileInfo;
 		readonly ResourceLayer resLayer;
@@ -35,8 +37,14 @@ namespace OpenRA.Mods.Common.Activities
 		{
 			harv = self.Trait<Harvester>();
 			harvInfo = self.Info.TraitInfo<HarvesterInfo>();
-			mobile = self.Trait<Mobile>();
-			mobileInfo = self.Info.TraitInfo<MobileInfo>();
+			move = self.Trait<IMove>();
+			moveInfo = self.Info.TraitInfo<IMoveInfo>();
+
+			// HACK: Check if move(Info) is a Mobile(Info)
+			// Only use pathfinding if that is the case
+			mobile = move as Mobile;
+			mobileInfo = moveInfo as MobileInfo;
+
 			resLayer = self.World.WorldActor.Trait<ResourceLayer>();
 			territory = self.World.WorldActor.TraitOrDefault<ResourceClaimLayer>();
 			pathFinder = self.World.WorldActor.Trait<IPathFinder>();
@@ -72,8 +80,8 @@ namespace OpenRA.Mods.Common.Activities
 					return deliver;
 
 				var unblockCell = harv.LastHarvestedCell ?? (self.Location + harvInfo.UnblockCell);
-				var moveTo = mobile.NearestMoveableCell(unblockCell, 2, 5);
-				self.QueueActivity(mobile.MoveTo(moveTo, 1));
+				var moveTo = move.NearestMoveableCell(unblockCell, 2, 5);
+				self.QueueActivity(move.MoveTo(moveTo, 1));
 				self.SetTargetLine(Target.FromCell(self.World, moveTo), Color.Gray, false);
 
 				// TODO: The harvest-deliver-return sequence is a horrible mess of duplicated code and edge-cases
@@ -105,7 +113,7 @@ namespace OpenRA.Mods.Common.Activities
 				foreach (var n in notify)
 					n.MovingToResources(self, closestHarvestablePosition.Value, this);
 
-				return ActivityUtils.SequenceActivities(mobile.MoveTo(closestHarvestablePosition.Value, 1), new HarvestResource(self), this);
+				return ActivityUtils.SequenceActivities(move.MoveTo(closestHarvestablePosition.Value, 1), new HarvestResource(self), this);
 			}
 		}
 
@@ -122,6 +130,15 @@ namespace OpenRA.Mods.Common.Activities
 			var searchFromLoc = harv.LastOrderLocation ?? (harv.LastLinkedProc ?? harv.LinkedProc ?? self).Location;
 			var searchRadius = harv.LastOrderLocation.HasValue ? harvInfo.SearchFromOrderRadius : harvInfo.SearchFromProcRadius;
 			var searchRadiusSquared = searchRadius * searchRadius;
+
+			if (mobileInfo == null)
+			{
+				foreach (var tile in self.World.Map.FindTilesInAnnulus(searchFromLoc, 1, searchRadius))
+					if (self.CanHarvestAt(tile, resLayer, harvInfo, territory))
+						return tile;
+
+				return null;
+			}
 
 			// Find any harvestable resources:
 			var passable = (uint)mobileInfo.GetMovementClass(self.World.Map.Rules.TileSet);

@@ -9,6 +9,7 @@
  */
 #endregion
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -20,7 +21,7 @@ using OpenRA.Traits;
 
 namespace OpenRA.Mods.Common.Traits
 {
-	public class HarvesterInfo : ITraitInfo, Requires<MobileInfo>
+	public class HarvesterInfo : ITraitInfo, Requires<IMoveInfo>
 	{
 		public readonly HashSet<string> DeliveryBuildings = new HashSet<string>();
 
@@ -81,8 +82,11 @@ namespace OpenRA.Mods.Common.Traits
 		INotifyResourceClaimLost, INotifyIdle, INotifyBlockingMove, INotifyBuildComplete
 	{
 		public readonly HarvesterInfo Info;
+		readonly Dictionary<ResourceTypeInfo, int> contents = new Dictionary<ResourceTypeInfo, int>();
+		readonly IMove move;
+		readonly IMoveInfo moveInfo;
 		readonly Mobile mobile;
-		Dictionary<ResourceTypeInfo, int> contents = new Dictionary<ResourceTypeInfo, int>();
+		readonly MobileInfo mobileInfo;
 		bool idleSmart = true;
 		int idleDuration;
 
@@ -107,7 +111,14 @@ namespace OpenRA.Mods.Common.Traits
 		public Harvester(Actor self, HarvesterInfo info)
 		{
 			Info = info;
-			mobile = self.Trait<Mobile>();
+			move = self.Trait<IMove>();
+			moveInfo = self.Info.TraitInfo<IMoveInfo>();
+
+			// HACK: Check if move(Info) is a Mobile(Info)
+			// Only use pathfinding if that is the case
+			mobile = move as Mobile;
+			mobileInfo = moveInfo as MobileInfo;
+
 			self.QueueActivity(new CallFunc(() => ChooseNewProc(self, null)));
 		}
 
@@ -125,8 +136,8 @@ namespace OpenRA.Mods.Common.Traits
 
 		public void SetProcLines(Actor proc)
 		{
-			if (proc == null) return;
-			if (proc.Disposed) return;
+			if (proc == null || proc.Disposed)
+				return;
 
 			var linkedHarvs = proc.World.ActorsHavingTrait<Harvester>(h => h.LinkedProc == proc)
 				.Select(a => Target.FromActor(a))
@@ -179,10 +190,12 @@ namespace OpenRA.Mods.Common.Traits
 					Occupancy = self.World.ActorsHavingTrait<Harvester>(h => h.LinkedProc == r.Actor).Count() })
 				.ToDictionary(r => r.Location);
 
+			if (mobileInfo == null)
+				return refs.Values.Select(r => r.Actor).ClosestTo(self);
+
 			// Start a search from each refinery's delivery location:
 			List<CPos> path;
-			var mi = self.Info.TraitInfo<MobileInfo>();
-			using (var search = PathSearch.FromPoints(self.World, mi, self, refs.Values.Select(r => r.Location), self.Location, false)
+			using (var search = PathSearch.FromPoints(self.World, mobileInfo, self, refs.Values.Select(r => r.Location), self.Location, false)
 				.WithCustomCost(loc =>
 				{
 					if (!refs.ContainsKey(loc))
@@ -226,7 +239,7 @@ namespace OpenRA.Mods.Common.Traits
 				{
 					// Get out of the way:
 					var unblockCell = LastHarvestedCell ?? (deliveryLoc + Info.UnblockCell);
-					var moveTo = mobile.NearestMoveableCell(unblockCell, 1, 5);
+					var moveTo = move.NearestMoveableCell(unblockCell, 1, 5);
 
 					// TODO: The harvest-deliver-return sequence is a horrible mess of duplicated code and edge-cases
 					var notify = self.TraitsImplementing<INotifyHarvesterAction>();
@@ -234,7 +247,7 @@ namespace OpenRA.Mods.Common.Traits
 					foreach (var n in notify)
 						n.MovingToResources(self, moveTo, findResources);
 
-					self.QueueActivity(mobile.MoveTo(moveTo, 1));
+					self.QueueActivity(move.MoveTo(moveTo, 1));
 					self.SetTargetLine(Target.FromCell(self.World, moveTo), Color.Gray, false);
 				}
 			}
@@ -251,8 +264,8 @@ namespace OpenRA.Mods.Common.Traits
 				self.CancelActivity();
 
 				var cell = self.Location;
-				var moveTo = mobile.NearestMoveableCell(cell, 2, 5);
-				self.QueueActivity(mobile.MoveTo(moveTo, 0));
+				var moveTo = move.NearestMoveableCell(cell, 2, 5);
+				self.QueueActivity(move.MoveTo(moveTo, 0));
 				self.SetTargetLine(Target.FromCell(self.World, moveTo), Color.Gray, false);
 
 				// Find more resources but not at this location:
@@ -361,13 +374,13 @@ namespace OpenRA.Mods.Common.Traits
 					if (territory != null)
 					{
 						// Find the nearest claimable cell to the order location (useful for group-select harvest):
-						loc = mobile.NearestCell(loc.Value, p => mobile.CanEnterCell(p) && territory.ClaimResource(self, p), 1, 6);
+						loc = NearestCell(self, loc.Value, p => (mobile == null || mobile.CanEnterCell(p)) && territory.ClaimResource(self, p), 1, 6);
 					}
 					else
 					{
 						// Find the nearest cell to the order location (useful for group-select harvest):
 						var taken = new HashSet<CPos>();
-						loc = mobile.NearestCell(loc.Value, p => mobile.CanEnterCell(p) && taken.Add(p), 1, 6);
+						loc = NearestCell(self, loc.Value, p => (mobile == null || mobile.CanEnterCell(p)) && taken.Add(p), 1, 6);
 					}
 				}
 				else
@@ -421,6 +434,19 @@ namespace OpenRA.Mods.Common.Traits
 				// Turn off idle smarts to obey the stop/move:
 				idleSmart = false;
 			}
+		}
+
+		CPos NearestCell(Actor self, CPos target, Func<CPos, bool> check, int minRange, int maxRange)
+		{
+			if (check(target))
+				return target;
+
+			foreach (var tile in self.World.Map.FindTilesInAnnulus(target, minRange, maxRange))
+				if (check(tile))
+					return tile;
+
+			// Couldn't find a cell
+			return target;
 		}
 
 		public void OnNotifyResourceClaimLost(Actor self, ResourceClaim claim, Actor claimer)

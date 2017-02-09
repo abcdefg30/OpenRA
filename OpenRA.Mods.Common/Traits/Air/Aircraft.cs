@@ -521,7 +521,7 @@ namespace OpenRA.Mods.Common.Traits
 				new HeliFly(self, Target.FromPos(toPos)));
 		}
 
-		public CPos NearestMoveableCell(CPos cell) { return cell; }
+		public CPos NearestMoveableCell(CPos cell, int minRange = 1, int maxRange = 10) { return cell; }
 
 		public bool IsMoving { get { return isMoving; } set { } }
 

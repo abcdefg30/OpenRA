@@ -586,32 +586,13 @@ namespace OpenRA.Mods.Common.Traits
 			return null;
 		}
 
-		public CPos NearestMoveableCell(CPos target)
-		{
-			// Limit search to a radius of 10 tiles
-			return NearestMoveableCell(target, 1, 10);
-		}
-
-		public CPos NearestMoveableCell(CPos target, int minRange, int maxRange)
+		public CPos NearestMoveableCell(CPos target, int minRange = 1, int maxRange = 10)
 		{
 			if (CanEnterCell(target))
 				return target;
 
 			foreach (var tile in self.World.Map.FindTilesInAnnulus(target, minRange, maxRange))
 				if (CanEnterCell(tile))
-					return tile;
-
-			// Couldn't find a cell
-			return target;
-		}
-
-		public CPos NearestCell(CPos target, Func<CPos, bool> check, int minRange, int maxRange)
-		{
-			if (check(target))
-				return target;
-
-			foreach (var tile in self.World.Map.FindTilesInAnnulus(target, minRange, maxRange))
-				if (check(tile))
 					return tile;
 
 			// Couldn't find a cell
