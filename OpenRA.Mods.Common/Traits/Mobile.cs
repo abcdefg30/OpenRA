@@ -21,6 +21,12 @@ using OpenRA.Traits;
 
 namespace OpenRA.Mods.Common.Traits
 {
+	[RequireExplicitImplementation]
+	public interface IActivityNotifyLocationReset : IActivityInterface
+	{
+		void LocationReset(Actor self);
+	}
+
 	[Desc("Unit is able to move.")]
 	public class MobileInfo : PausableConditionalTraitInfo, IMoveInfo, IPositionableInfo, IFacingInfo, IActorPreviewInitInfo,
 		IEditorActorOptions

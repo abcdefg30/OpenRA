@@ -20,7 +20,7 @@ using OpenRA.Traits;
 
 namespace OpenRA.Mods.Common.Activities
 {
-	public class Move : Activity
+	public class Move : Activity, IActivityNotifyLocationReset
 	{
 		static readonly List<CPos> NoPath = new List<CPos>();
 
@@ -32,6 +32,7 @@ namespace OpenRA.Mods.Common.Activities
 
 		List<CPos> path;
 		CPos? destination;
+		bool locationReset;
 
 		// For dealing with blockers
 		bool hasWaited;
@@ -155,6 +156,10 @@ namespace OpenRA.Mods.Common.Activities
 
 		public override bool Tick(Actor self)
 		{
+			// Actor has been moved underneath us - exit immediately without touching any state
+			if (locationReset)
+				return true;
+
 			mobile.TurnToMove = false;
 
 			// If the actor is inside a tunnel then we must let them move
@@ -407,6 +412,10 @@ namespace OpenRA.Mods.Common.Activities
 
 			public override bool Tick(Actor self)
 			{
+				// Actor has been moved underneath us - exit immediately without touching any state
+				if (Move.locationReset)
+					return true;
+
 				if (Move.mobile.IsTraitDisabled || Move.mobile.IsTraitPaused)
 					return false;
 
@@ -537,6 +546,11 @@ namespace OpenRA.Mods.Common.Activities
 				mobile.SetPosition(self, mobile.ToCell);
 				return null;
 			}
+		}
+
+		void IActivityNotifyLocationReset.LocationReset(Actor self)
+		{
+			locationReset = true;
 		}
 	}
 }

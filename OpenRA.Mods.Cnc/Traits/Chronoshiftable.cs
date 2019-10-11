@@ -80,17 +80,11 @@ namespace OpenRA.Mods.Cnc.Traits
 			// Return to original location
 			if (--ReturnTicks == 0)
 			{
-				// The Move activity is not immediately cancelled, which, combined
-				// with Activity.Cancel discarding NextActivity without checking the
-				// IsInterruptable flag, means that a well timed order can cancel the
-				// Teleport activity queued below - an exploit / cheat of the return mechanic.
-				// The Teleport activity queued below is guaranteed to either complete
-				// (force-resetting the actor to the middle of the target cell) or kill
-				// the actor. It is therefore safe to force-erase the Move activity to
-				// work around the cancellation bug.
-				// HACK: this is manipulating private internal actor state
-				if (self.CurrentActivity is Move)
-					typeof(Actor).GetProperty("CurrentActivity").SetValue(self, null);
+				// Force any active Move activities to cancel themselves immediately
+				// This leaves the actor in an inconsistent state, which is fixed by the Teleport activity
+				var notifyLocationReset = self.CurrentActivity as IActivityNotifyLocationReset;
+				if (notifyLocationReset != null)
+					notifyLocationReset.LocationReset(self);
 
 				// The actor is killed using Info.DamageTypes if the teleport fails
 				self.QueueActivity(false, new Teleport(chronosphere, Origin, null, true, killCargo, Info.ChronoshiftSound,

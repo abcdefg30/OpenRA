@@ -82,6 +82,10 @@ namespace OpenRA.Mods.Common.Traits
 
 			if (carriedToken != ConditionManager.InvalidConditionToken)
 				carriedToken = conditionManager.RevokeCondition(self, carriedToken);
+
+			var notifyLocationReset = self.CurrentActivity as IActivityNotifyLocationReset;
+			if (notifyLocationReset != null)
+				notifyLocationReset.LocationReset(self);
 		}
 
 		public virtual bool Reserve(Actor self, Actor carrier)
