@@ -82,9 +82,11 @@ namespace OpenRA.Mods.Cnc.Traits
 			{
 				// Force any active Move activities to cancel themselves immediately
 				// This leaves the actor in an inconsistent state, which is fixed by the Teleport activity
-				var notifyLocationReset = self.CurrentActivity as IActivityNotifyLocationReset;
-				if (notifyLocationReset != null)
-					notifyLocationReset.LocationReset(self);
+				// var notifyLocationReset = self.CurrentActivity as IActivityNotifyLocationReset;
+				// if (notifyLocationReset != null)
+				// notifyLocationReset.LocationReset(self);
+				if (self.CurrentActivity != null)
+					self.CurrentActivity.PropagateNotifiers<IActivityNotifyLocationReset>("LocationReset", new[] { self });
 
 				// The actor is killed using Info.DamageTypes if the teleport fails
 				self.QueueActivity(false, new Teleport(chronosphere, Origin, null, true, killCargo, Info.ChronoshiftSound,

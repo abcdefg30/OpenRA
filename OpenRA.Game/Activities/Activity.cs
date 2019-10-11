@@ -252,5 +252,22 @@ namespace OpenRA.Activities
 				foreach (var a in NextActivity.ActivitiesImplementing<T>())
 					yield return a;
 		}
+
+		public void PropagateNotifiers<T>(string method, object[] args)
+		{
+			if (this is T)
+			{
+				var type = typeof(T);
+				var methodInfo = type.GetMethod(method);
+				if (methodInfo != null)
+					methodInfo.Invoke(this, args);
+			}
+
+			if (ChildActivity != null)
+				ChildActivity.PropagateNotifiers<T>(method, args);
+
+			if (NextActivity != null)
+				NextActivity.PropagateNotifiers<T>(method, args);
+		}
 	}
 }
