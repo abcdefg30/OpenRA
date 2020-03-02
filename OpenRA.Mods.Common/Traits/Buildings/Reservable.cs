@@ -66,10 +66,19 @@ namespace OpenRA.Mods.Common.Traits
 				}));
 		}
 
-		public static bool IsReserved(Actor a)
+		public static bool ProductionBlockedByReservation(Actor host, ActorInfo producee)
 		{
-			var res = a.TraitOrDefault<Reservable>();
-			return res != null && res.reservedForAircraft != null && !res.reservedForAircraft.MayYieldReservation;
+			var res = host.TraitOrDefault<Reservable>();
+			if (res == null || res.reservedForAircraft == null)
+				return false;
+
+			if (res.reservedForAircraft.MayYieldReservation)
+				return false;
+
+			// We can still produce if the reservedForAircraft is not (yet) on the host
+			// and the produced actor is going to take off after production
+			var ai = producee.TraitInfoOrDefault<AircraftInfo>();
+			return ai == null || !ai.TakeOffOnCreation || res.reservedForAircraft.GetActorBelow() != null;
 		}
 
 		public static bool IsAvailableFor(Actor reservable, Actor forActor)
