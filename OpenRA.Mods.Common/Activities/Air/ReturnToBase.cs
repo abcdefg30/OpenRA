@@ -76,53 +76,60 @@ namespace OpenRA.Mods.Common.Activities
 			if (dest == null || dest.IsDead || !Reservable.IsAvailableFor(dest, self))
 				dest = ChooseResupplier(self, true);
 
-			if (dest == null)
+			if (dest != null)
 			{
-				var nearestResupplier = ChooseResupplier(self, false);
-
-				if (nearestResupplier != null)
+				if (!ShouldLandAtBuilding(self, dest))
 				{
-					if (aircraft.Info.CanHover)
+					QueueChild(new Fly(self, Target.FromActor(dest), targetLineColor: Color.Green));
+					return true;
+				}
+
+				// TryMakeReservation should always return true because of the way we chose dest
+				// But don't blindly trust this part of the code and fallback to null if something goes wrong
+				if (!aircraft.TryMakeReservation(dest))
+					dest = null;
+				else
+				{
+					var exit = dest.FirstExitOrDefault();
+					var offset = exit != null ? exit.Info.SpawnOffset : WVec.Zero;
+					if (aircraft.Info.TurnToDock || !aircraft.Info.VTOL)
+						facing = aircraft.Info.InitialFacing;
+
+					QueueChild(new Land(self, Target.FromActor(dest), offset, facing, Color.Green));
+					QueueChild(new Resupply(self, dest, WDist.Zero, alwaysLand));
+
+					return true;
+				}
+			}
+
+			// dest is null, search for a safe site where we don't land
+			var nearestResupplier = ChooseResupplier(self, false);
+			if (nearestResupplier != null)
+			{
+				if (aircraft.Info.CanHover)
+				{
+					var distanceFromResupplier = (nearestResupplier.CenterPosition - self.CenterPosition).HorizontalLength;
+					var distanceLength = aircraft.Info.WaitDistanceFromResupplyBase.Length;
+
+					// If no pad is available, move near one and wait
+					if (distanceFromResupplier > distanceLength)
 					{
-						var distanceFromResupplier = (nearestResupplier.CenterPosition - self.CenterPosition).HorizontalLength;
-						var distanceLength = aircraft.Info.WaitDistanceFromResupplyBase.Length;
+						var randomPosition = WVec.FromPDF(self.World.SharedRandom, 2) * distanceLength / 1024;
+						var target = Target.FromPos(nearestResupplier.CenterPosition + randomPosition);
 
-						// If no pad is available, move near one and wait
-						if (distanceFromResupplier > distanceLength)
-						{
-							var randomPosition = WVec.FromPDF(self.World.SharedRandom, 2) * distanceLength / 1024;
-							var target = Target.FromPos(nearestResupplier.CenterPosition + randomPosition);
-
-							QueueChild(new Fly(self, target, WDist.Zero, aircraft.Info.WaitDistanceFromResupplyBase, targetLineColor: Color.Green));
-						}
-
-						return false;
+						QueueChild(new Fly(self, target, WDist.Zero, aircraft.Info.WaitDistanceFromResupplyBase, targetLineColor: Color.Green));
 					}
 
-					QueueChild(new Fly(self, Target.FromActor(nearestResupplier), WDist.Zero, aircraft.Info.WaitDistanceFromResupplyBase, targetLineColor: Color.Green));
-					QueueChild(new FlyIdle(self, aircraft.Info.NumberOfTicksToVerifyAvailableAirport));
 					return false;
 				}
 
-				// Prevent an infinite loop in case we'd return to the activity that called ReturnToBase in the first place. Go idle instead.
-				self.CancelActivity();
-				return true;
+				QueueChild(new Fly(self, Target.FromActor(nearestResupplier), WDist.Zero, aircraft.Info.WaitDistanceFromResupplyBase, targetLineColor: Color.Green));
+				QueueChild(new FlyIdle(self, aircraft.Info.NumberOfTicksToVerifyAvailableAirport));
+				return false;
 			}
 
-			if (ShouldLandAtBuilding(self, dest))
-			{
-				var exit = dest.FirstExitOrDefault();
-				var offset = exit != null ? exit.Info.SpawnOffset : WVec.Zero;
-				if (aircraft.Info.TurnToDock || !aircraft.Info.VTOL)
-					facing = aircraft.Info.InitialFacing;
-
-				aircraft.MakeReservation(dest);
-				QueueChild(new Land(self, Target.FromActor(dest), offset, facing, Color.Green));
-				QueueChild(new Resupply(self, dest, WDist.Zero, alwaysLand));
-				return true;
-			}
-
-			QueueChild(new Fly(self, Target.FromActor(dest), targetLineColor: Color.Green));
+			// Prevent an infinite loop in case we'd return to the activity that called ReturnToBase in the first place. Go idle instead.
+			self.CancelActivity();
 			return true;
 		}
 

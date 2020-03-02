@@ -45,10 +45,12 @@ namespace OpenRA.Mods.Common.Traits
 			}
 		}
 
-		public IDisposable Reserve(Actor self, Actor forActor, Aircraft forAircraft)
+		public IDisposable TryToReserve(Actor self, Actor forActor, Aircraft forAircraft)
 		{
-			if (reservedForAircraft != null && reservedForAircraft.MayYieldReservation)
-				UnReserve(self);
+			if (reservedForAircraft != null && !reservedForAircraft.MayYieldReservation)
+				return null;
+
+			UnReserve(self);
 
 			reservedFor = forActor;
 			reservedForAircraft = forAircraft;

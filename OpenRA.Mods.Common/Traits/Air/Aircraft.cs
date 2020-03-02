@@ -478,15 +478,21 @@ namespace OpenRA.Mods.Common.Traits
 				.FirstOrDefault(a => a.Info.HasTraitInfo<ReservableInfo>());
 		}
 
-		public void MakeReservation(Actor target)
+		public bool TryMakeReservation(Actor target)
 		{
 			UnReserve();
+
+			// Count as successfully reserved if there is no Reservable
 			var reservable = target.TraitOrDefault<Reservable>();
-			if (reservable != null)
-			{
-				reservation = reservable.Reserve(target, self, this);
-				ReservedActor = target;
-			}
+			if (reservable == null)
+				return true;
+
+			reservation = reservable.TryToReserve(target, self, this);
+			if (reservation == null)
+				return false;
+
+			ReservedActor = target;
+			return true;
 		}
 
 		public void AllowYieldingReservation()
@@ -847,6 +853,8 @@ namespace OpenRA.Mods.Common.Traits
 			readonly Aircraft aircraft;
 			readonly int delay;
 
+			bool forcedTakeoff;
+
 			public AssociateWithAirfieldActivity(Actor self, int delay = 0)
 			{
 				this.self = self;
@@ -857,9 +865,11 @@ namespace OpenRA.Mods.Common.Traits
 
 			protected override void OnFirstRun(Actor self)
 			{
+				// Reserve the current host if we don't take off at once
+				// And force a takeoff if we want to stay landed, but can't
 				var host = aircraft.GetActorBelow();
-				if (host != null)
-					aircraft.MakeReservation(host);
+				if (host != null && (delay > 0 || !aircraft.Info.TakeOffOnCreation))
+					forcedTakeoff = !aircraft.TryMakeReservation(host);
 
 				if (delay > 0)
 					QueueChild(new Wait(delay));
@@ -867,7 +877,7 @@ namespace OpenRA.Mods.Common.Traits
 
 			public override bool Tick(Actor self)
 			{
-				if (!aircraft.Info.TakeOffOnCreation)
+				if (!forcedTakeoff && !aircraft.Info.TakeOffOnCreation)
 					return true;
 
 				if (self.World.Map.DistanceAboveTerrain(aircraft.CenterPosition).Length <= aircraft.LandAltitude.Length)
@@ -927,8 +937,7 @@ namespace OpenRA.Mods.Common.Traits
 			if (target.Positions.Any(p => self.World.ActorMap.GetActorsAt(self.World.Map.CellContaining(p)).Any(a => a != self && a != target.Actor)))
 				return false;
 
-			MakeReservation(target.Actor);
-			return true;
+			return TryMakeReservation(target.Actor);
 		}
 
 		#endregion
