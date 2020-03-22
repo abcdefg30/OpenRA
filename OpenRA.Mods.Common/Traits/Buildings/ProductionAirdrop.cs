@@ -80,9 +80,6 @@ namespace OpenRA.Mods.Common.Traits
 				spawnFacing = info.Facing;
 			}
 
-			// Assume a single exit point for simplicity
-			var exit = self.Info.TraitInfos<ExitInfo>().First();
-
 			foreach (var tower in self.TraitsImplementing<INotifyDelivery>())
 				tower.IncomingDelivery(self);
 
@@ -98,22 +95,30 @@ namespace OpenRA.Mods.Common.Traits
 					new FacingInit(spawnFacing)
 				});
 
-				var exitCell = self.Location + exit.ExitCell;
-				actor.QueueActivity(new Land(actor, Target.FromActor(self), WDist.Zero, WVec.Zero, info.Facing, clearCells: new CPos[1] { exitCell }));
+				actor.QueueActivity(new Fly(actor, Target.FromCell(w, self.Location + new CVec(20, 1))));
 				actor.QueueActivity(new CallFunc(() =>
 				{
-					if (!self.IsInWorld || self.IsDead)
-						return;
+					var exit = SelectExit(self, producee, productionType);
+					var exitCell = self.Location;
+					if (exit != null)
+						exitCell += exit.Info.ExitCell;
 
-					foreach (var cargo in self.TraitsImplementing<INotifyDelivery>())
-						cargo.Delivered(self);
+					actor.QueueActivity(new Land(actor, Target.FromActor(self), WDist.Zero, WVec.Zero, info.Facing, clearCells: new[] { exitCell }));
+					actor.QueueActivity(new CallFunc(() =>
+					{
+						if (!self.IsInWorld || self.IsDead)
+							return;
 
-					self.World.AddFrameEndTask(ww => DoProduction(self, producee, exit, productionType, inits));
-					Game.Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", info.ReadyAudio, self.Owner.Faction.InternalName);
+						foreach (var cargo in self.TraitsImplementing<INotifyDelivery>())
+							cargo.Delivered(self);
+
+						self.World.AddFrameEndTask(ww => DoProduction(self, producee, exit == null ? null : exit.Info, productionType, inits));
+						Game.Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", info.ReadyAudio, self.Owner.Faction.InternalName);
+					}));
+
+					actor.QueueActivity(new FlyOffMap(actor, Target.FromCell(w, endPos)));
+					actor.QueueActivity(new RemoveSelf());
 				}));
-
-				actor.QueueActivity(new FlyOffMap(actor, Target.FromCell(w, endPos)));
-				actor.QueueActivity(new RemoveSelf());
 			});
 
 			return true;
