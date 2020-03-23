@@ -19,6 +19,7 @@ namespace OpenRA.Platforms.Default
 	class Sdl2Input
 	{
 		MouseButton lastButtonBits = MouseButton.None;
+		bool suspended;
 
 		public string GetClipboardText() { return SDL.SDL_GetClipboardText(); }
 		public bool SetClipboardText(string text) { return SDL.SDL_SetClipboardText(text) == 0; }
@@ -67,6 +68,10 @@ namespace OpenRA.Platforms.Default
 			inputHandler.ModifierKeys(mods);
 			MouseInput? pendingMotion = null;
 
+			// HACK: On windows we can't restore a minimized window without yielding the thread before polling
+			/if (suspended && Platform.CurrentPlatform == PlatformType.Windows)
+				System.Threading.Thread.Sleep(100);
+
 			SDL.SDL_Event e;
 			while (SDL.SDL_PollEvent(out e) != 0)
 			{
@@ -91,6 +96,14 @@ namespace OpenRA.Platforms.Default
 								// Triggered when moving between displays with different DPI settings
 								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED:
 									device.WindowSizeChanged();
+									break;
+
+								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED:
+									suspended = true;
+									break;
+
+								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED:
+									suspended = false;
 									break;
 							}
 
