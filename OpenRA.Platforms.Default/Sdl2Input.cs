@@ -69,9 +69,8 @@ namespace OpenRA.Platforms.Default
 			MouseInput? pendingMotion = null;
 
 			// HACK: On windows we can't restore a minimized window without yielding the thread before polling
-			/if (suspended && Platform.CurrentPlatform == PlatformType.Windows)
-				System.Threading.Thread.Sleep(100);
-
+			// if (suspended && Platform.CurrentPlatform == PlatformType.Windows)
+			// System.Threading.Thread.Sleep(100);
 			SDL.SDL_Event e;
 			while (SDL.SDL_PollEvent(out e) != 0)
 			{
@@ -100,6 +99,17 @@ namespace OpenRA.Platforms.Default
 
 								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_MINIMIZED:
 									suspended = true;
+									if (suspended)
+										suspended = false;
+
+									while (true)
+									{
+										SDL.SDL_WaitEvent(out e);
+										SDL.SDL_PushEvent(ref e);
+										if (e.type == SDL.SDL_EventType.SDL_WINDOWEVENT && e.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED)
+											break;
+									}
+
 									break;
 
 								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED:
