@@ -419,6 +419,11 @@ namespace OpenRA.Platforms.Default
 			SDL.SDL_SetWindowGrab(Window, SDL.SDL_bool.SDL_FALSE);
 		}
 
+		public bool IsRestored()
+		{
+			return input.IsRestored();
+		}
+
 		public void PumpInput(IInputHandler inputHandler)
 		{
 			VerifyThreadAffinity();

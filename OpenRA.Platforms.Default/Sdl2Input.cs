@@ -62,6 +62,42 @@ namespace OpenRA.Platforms.Default
 			return new int2(x, y);
 		}
 
+		public bool IsRestored()
+		{
+			var events = new System.Collections.Generic.List<SDL.SDL_Event>();
+			var restored = false;
+			SDL.SDL_Event e;
+			while (SDL.SDL_PollEvent(out e) != 0)
+			{
+				events.Add(e);
+				if (e.type == SDL.SDL_EventType.SDL_WINDOWEVENT && e.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED)
+				{
+					restored = true;
+					break;
+				}
+			}
+
+			foreach (var y in events)
+			{
+				var x = y;
+				SDL.SDL_PushEvent(ref x);
+			}
+
+			return restored;
+		}
+
+		public void WaitForRestore()
+		{
+			SDL.SDL_Event e;
+			while (true)
+			{
+				SDL.SDL_WaitEvent(out e);
+				SDL.SDL_PushEvent(ref e);
+				if (e.type == SDL.SDL_EventType.SDL_WINDOWEVENT && e.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED)
+					break;
+			}
+		}
+
 		public void PumpInput(Sdl2PlatformWindow device, IInputHandler inputHandler, int2? lockedMousePosition)
 		{
 			var mods = MakeModifiers((int)SDL.SDL_GetModState());
@@ -102,18 +138,19 @@ namespace OpenRA.Platforms.Default
 									if (suspended)
 										suspended = false;
 
-									while (true)
+									/*while (true)
 									{
 										SDL.SDL_WaitEvent(out e);
 										SDL.SDL_PushEvent(ref e);
 										if (e.type == SDL.SDL_EventType.SDL_WINDOWEVENT && e.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED)
 											break;
-									}
-
+									}*/
+									Game.Suspended = 1;
 									break;
 
 								case SDL.SDL_WindowEventID.SDL_WINDOWEVENT_RESTORED:
 									suspended = false;
+									Game.Suspended = 0;
 									break;
 							}
 
@@ -229,6 +266,9 @@ namespace OpenRA.Platforms.Default
 						}
 				}
 			}
+
+			if (IsRestored())
+				pendingMotion = null;
 
 			if (pendingMotion != null)
 			{

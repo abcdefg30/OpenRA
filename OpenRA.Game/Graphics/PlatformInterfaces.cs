@@ -49,6 +49,7 @@ namespace OpenRA
 
 		event Action<float, float, float, float> OnWindowScaleChanged;
 
+		bool IsRestored();
 		void PumpInput(IInputHandler inputHandler);
 		string GetClipboardText();
 		bool SetClipboardText(string text);

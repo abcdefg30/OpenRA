@@ -712,6 +712,8 @@ namespace OpenRA
 			PerfHistory.Items["render_flip"].Tick();
 		}
 
+		public static int Suspended;
+
 		static void Loop()
 		{
 			// The game loop mainly does two things: logic updates and
@@ -756,6 +758,7 @@ namespace OpenRA
 			var nextRender = RunTime;
 			var forcedNextRender = RunTime;
 			var renderBeforeNextTick = false;
+			var disableRendering = false;
 
 			while (state == RunStatus.Running)
 			{
@@ -800,7 +803,7 @@ namespace OpenRA
 					var haveSomeTimeUntilNextLogic = now < nextLogic;
 					var isTimeToRender = now >= nextRender;
 
-					if ((isTimeToRender && haveSomeTimeUntilNextLogic) || forceRender)
+					if (!disableRendering && ((isTimeToRender && haveSomeTimeUntilNextLogic) || forceRender))
 					{
 						nextRender = now + renderInterval;
 
@@ -813,6 +816,12 @@ namespace OpenRA
 						forcedNextRender = now + maxRenderInterval;
 
 						RenderTick();
+						renderBeforeNextTick = false;
+					}
+
+					if (Suspended > 0)
+					{
+						disableRendering = !Renderer.Window.IsRestored();
 						renderBeforeNextTick = false;
 					}
 				}

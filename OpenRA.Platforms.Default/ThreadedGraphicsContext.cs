@@ -119,6 +119,29 @@ namespace OpenRA.Platforms.Default
 				Message message;
 				while (true)
 				{
+					var events = new List<SDL2.SDL.SDL_Event>();
+					SDL2.SDL.SDL_Event e;
+					while (SDL2.SDL.SDL_PollEvent(out e) != 0)
+					{
+						if (e.type == SDL2.SDL.SDL_EventType.SDL_WINDOWEVENT
+							&& e.window.windowEvent != SDL2.SDL.SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED
+							&& e.window.windowEvent != SDL2.SDL.SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST
+							&& e.window.windowEvent != SDL2.SDL.SDL_WindowEventID.SDL_WINDOWEVENT_SHOWN
+							&& e.window.windowEvent != SDL2.SDL.SDL_WindowEventID.SDL_WINDOWEVENT_EXPOSED
+							&& e.window.windowEvent != SDL2.SDL.SDL_WindowEventID.SDL_WINDOWEVENT_NONE)
+						{
+							// nothing
+						}
+
+						events.Add(e);
+					}
+
+					foreach (var y in events)
+					{
+						var x = y;
+						SDL2.SDL.SDL_PushEvent(ref x);
+					}
+
 					lock (messages)
 					{
 						if (messages.Count == 0)
