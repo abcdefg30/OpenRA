@@ -67,3 +67,4 @@ StyleCopViolations.xml
 
 # IntelliJ files
 .idea
+/test

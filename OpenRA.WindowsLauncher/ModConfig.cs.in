@@ -1,0 +1,12 @@
+﻿namespace OpenRA.WindowsLauncher
+{
+	public partial class ModConfig
+	{
+		partial void Init()
+		{
+			ModID = "MOD_ID";
+			DisplayName = "DISPLAY_NAME";
+			FaqUrl = "FAQ_URL";
+		}
+	}
+}

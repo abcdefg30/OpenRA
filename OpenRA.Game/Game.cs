@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
 using OpenRA.Graphics;
@@ -313,7 +314,9 @@ namespace OpenRA
 				try
 				{
 					var rendererPath = Platform.ResolvePath(Path.Combine(".", "OpenRA.Platforms." + p + ".dll"));
-					var assembly = Assembly.LoadFile(rendererPath);
+
+					var loader = new TypeLoader();
+					var assembly = loader.LoadAssembly(rendererPath);
 
 					var platformType = assembly.GetTypes().SingleOrDefault(t => typeof(IPlatform).IsAssignableFrom(t));
 					if (platformType == null)
@@ -969,6 +972,81 @@ namespace OpenRA
 			{
 				benchmark.Write();
 				Exit();
+			}
+		}
+	}
+
+	public static class AssemblyLoader
+	{
+		public static Assembly LoadAssembly(string resolvedPath)
+		{
+			Assembly assembly;
+			assembly = Assembly.LoadFile(resolvedPath);
+
+			// Allow mods to use libraries.
+			var assemblyPath = Path.GetDirectoryName(resolvedPath);
+			if (assemblyPath != null)
+			{
+				foreach (var referencedAssembly in assembly.GetReferencedAssemblies())
+				{
+					var depedencyPath = Path.Combine(assemblyPath, referencedAssembly.Name + ".dll");
+					if (File.Exists(depedencyPath))
+						LoadAssembly(depedencyPath);
+				}
+			}
+
+			return assembly;
+		}
+	}
+
+	public class TypeLoader
+	{
+		readonly object resolutionLock = new object();
+
+		Assembly Context_Resolving(AssemblyLoadContext context, AssemblyName assemblyName)
+		{
+			var expectedPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, assemblyName.Name + ".dll");
+			return context.LoadFromAssemblyPath(expectedPath);
+		}
+
+		public Assembly LoadAssembly(string assemblyPath)
+		{
+			var context = AssemblyLoadContext.Default;
+
+			var fileName = Path.GetFileName(assemblyPath);
+			var directory = Path.GetDirectoryName(assemblyPath);
+
+			lock (resolutionLock)
+			{
+				context.Resolving += Context_Resolving;
+
+				var assembly = context.LoadFromAssemblyPath(assemblyPath);
+
+				if (assembly != null)
+					LoadReferencedAssemblies(context, assembly, fileName, directory);
+
+				context.Resolving -= Context_Resolving;
+
+				return assembly;
+			}
+		}
+
+		static void LoadReferencedAssemblies(AssemblyLoadContext context, Assembly assembly, string fileName,
+			string directory)
+		{
+			var filesInDirectory = Directory.GetFiles(directory).Where(x => x != fileName).Select(x => Path.GetFileNameWithoutExtension(x)).ToList();
+			var references = assembly.GetReferencedAssemblies();
+
+			foreach (var reference in references)
+			{
+				if (filesInDirectory.Contains(reference.Name))
+				{
+					var loadFileName = reference.Name + ".dll";
+					var path = Path.Combine(directory, loadFileName);
+					var loadedAssembly = context.LoadFromAssemblyPath(path);
+					if (loadedAssembly != null)
+						LoadReferencedAssemblies(context, loadedAssembly, loadFileName, directory);
+				}
 			}
 		}
 	}

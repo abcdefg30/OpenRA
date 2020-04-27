@@ -76,6 +76,7 @@ INSTALL_DATA = $(INSTALL) -m644
 
 # Toolchain
 MSBUILD = msbuild -verbosity:m -nologo
+DOTNET = dotnet build
 
 # Enable 32 bit builds while generating the windows installer
 WIN32 = false
@@ -95,6 +96,11 @@ endif
 endif
 endif
 
+
+ifdef MONO
+MONO_PARAMETER = -p:Mono=true
+endif
+
 # program targets
 VERSION     = $(shell git name-rev --name-only --tags --no-undefined HEAD 2>/dev/null || echo git-`git rev-parse --short HEAD`)
 
@@ -107,38 +113,44 @@ check-scripts:
 check:
 	@echo
 	@echo "Compiling in debug mode..."
-	@$(MSBUILD) -t:build -p:Configuration=Debug
+	@$(DOTNET) -c Debug -p:TargetPlatform=$(TARGETPLATFORM)
 	@echo
 	@echo "Checking runtime assemblies..."
-	@mono --debug OpenRA.Utility.exe all --check-runtime-assemblies $(WHITELISTED_OPENRA_ASSEMBLIES) $(WHITELISTED_THIRDPARTY_ASSEMBLIES) $(WHITELISTED_CORE_ASSEMBLIES)
+	@dotnet OpenRA-Utility.dll all --check-runtime-assemblies $(WHITELISTED_OPENRA_ASSEMBLIES) $(WHITELISTED_THIRDPARTY_ASSEMBLIES) $(WHITELISTED_CORE_ASSEMBLIES)
 	@echo
 	@echo "Checking for explicit interface violations..."
-	@mono --debug OpenRA.Utility.exe all --check-explicit-interfaces
+	@dotnet OpenRA-Utility.dll all --check-explicit-interfaces
 	@echo
 	@echo "Checking for incorrect conditional trait interface overrides..."
-	@mono --debug OpenRA.Utility.exe all --check-conditional-trait-interface-overrides
+	@dotnet OpenRA-Utility.dll all --check-conditional-trait-interface-overrides
 
 test: core
 	@echo
 	@echo "Testing Tiberian Sun mod MiniYAML..."
-	@mono --debug OpenRA.Utility.exe ts --check-yaml
+	@dotnet OpenRA-Utility.dll ts --check-yaml
 	@echo
 	@echo "Testing Dune 2000 mod MiniYAML..."
-	@mono --debug OpenRA.Utility.exe d2k --check-yaml
+	@dotnet OpenRA-Utility.dll d2k --check-yaml
 	@echo
 	@echo "Testing Tiberian Dawn mod MiniYAML..."
-	@mono --debug OpenRA.Utility.exe cnc --check-yaml
+	@dotnet OpenRA-Utility.dll cnc --check-yaml
 	@echo
 	@echo "Testing Red Alert mod MiniYAML..."
-	@mono --debug OpenRA.Utility.exe ra --check-yaml
+	@dotnet OpenRA-Utility.dll ra --check-yaml
 
 ########################## MAKE/INSTALL RULES ##########################
 #
 all: core
 
 core:
+ifdef MONO
+	@echo "Building with mono."
 	@command -v $(firstword $(MSBUILD)) >/dev/null || (echo "OpenRA requires the '$(MSBUILD)' tool provided by Mono >= 5.18."; exit 1)
-	@$(MSBUILD) -t:Build -restore -p:Configuration=Release -p:TargetPlatform=$(TARGETPLATFORM)
+	@$(MSBUILD) -t:Build -restore -p:Configuration="Release - Mono" -p:TargetPlatform=$(TARGETPLATFORM) -p:TargetFramework=netstandard2.1 $(MONO_PARAMETER)
+else
+	@$(DOTNET) -c Release -p:TargetPlatform=$(TARGETPLATFORM)
+endif
+
 ifeq ($(TARGETPLATFORM), unix-generic)
 	@./configure-system-libraries.sh
 endif
@@ -148,7 +160,7 @@ clean:
 	@-$(RM_F) *.config IP2LOCATION-LITE-DB1.IPV6.BIN.ZIP
 	@-$(RM_F) *.exe *.dll *.dll.config *.so *.dylib ./OpenRA*/*.dll *.pdb mods/**/*.dll mods/**/*.pdb *.resources
 	@-$(RM_RF) ./*/bin ./*/obj
-	@ $(MSBUILD) -t:clean
+	@dotnet clean
 
 version: VERSION mods/ra/mod.yaml mods/cnc/mod.yaml mods/d2k/mod.yaml mods/ts/mod.yaml mods/modcontent/mod.yaml mods/all/mod.yaml
 	@echo "$(VERSION)" > VERSION

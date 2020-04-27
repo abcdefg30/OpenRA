@@ -108,13 +108,13 @@ function Test-Command
 
 	Write-Host "Testing mods..." -ForegroundColor Cyan
 	Write-Host "Testing Tiberian Sun mod MiniYAML..." -ForegroundColor Cyan
-	./OpenRA.Utility.exe ts --check-yaml
+	./OpenRA-Utility.exe ts --check-yaml
 	Write-Host "Testing Dune 2000 mod MiniYAML..." -ForegroundColor Cyan
-	./OpenRA.Utility.exe d2k --check-yaml
+	./OpenRA-Utility.exe d2k --check-yaml
 	Write-Host "Testing Tiberian Dawn mod MiniYAML..." -ForegroundColor Cyan
-	./OpenRA.Utility.exe cnc --check-yaml
+	./OpenRA-Utility.exe cnc --check-yaml
 	Write-Host "Testing Red Alert mod MiniYAML..." -ForegroundColor Cyan
-	./OpenRA.Utility.exe ra --check-yaml
+	./OpenRA-Utility.exe ra --check-yaml
 }
 
 function Check-Command
@@ -129,10 +129,10 @@ function Check-Command
 	if ((CheckForUtility) -eq 0)
 	{
 		Write-Host "Checking for explicit interface violations..." -ForegroundColor Cyan
-		./OpenRA.Utility.exe all --check-explicit-interfaces
+		./OpenRA-Utility.exe all --check-explicit-interfaces
 
 		Write-Host "Checking for incorrect conditional trait interface overrides..." -ForegroundColor Cyan
-		./OpenRA.Utility.exe all --check-conditional-trait-interface-overrides
+		./OpenRA-Utility.exe all --check-conditional-trait-interface-overrides
 	}
 }
 
@@ -165,15 +165,15 @@ function Docs-Command
 	}
 
 	./make.ps1 version
-	./OpenRA.Utility.exe all --docs | Out-File -Encoding "UTF8" DOCUMENTATION.md
-	./OpenRA.Utility.exe all --weapon-docs | Out-File -Encoding "UTF8" WEAPONS.md
-	./OpenRA.Utility.exe all --lua-docs | Out-File -Encoding "UTF8" Lua-API.md
-	./OpenRA.Utility.exe all --settings-docs | Out-File -Encoding "UTF8" Settings.md
+	./OpenRA-Utility.exe all --docs | Out-File -Encoding "UTF8" DOCUMENTATION.md
+	./OpenRA-Utility.exe all --weapon-docs | Out-File -Encoding "UTF8" WEAPONS.md
+	./OpenRA-Utility.exe all --lua-docs | Out-File -Encoding "UTF8" Lua-API.md
+	./OpenRA-Utility.exe all --settings-docs | Out-File -Encoding "UTF8" Settings.md
 }
 
 function CheckForUtility
 {
-	if (Test-Path OpenRA.Utility.exe)
+	if (Test-Path OpenRA-Utility.exe)
 	{
 		return 0
 	}

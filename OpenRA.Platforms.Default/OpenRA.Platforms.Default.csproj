@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-      <TargetFramework>net472</TargetFramework>
+      <TargetFramework>netstandard2.1</TargetFramework>
       <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
       <Optimize>true</Optimize>
       <LangVersion>5</LangVersion>
@@ -11,6 +11,8 @@
       <PlatformTarget>AnyCPU</PlatformTarget>
       <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
       <CodeAnalysisRuleSet>..\OpenRA.ruleset</CodeAnalysisRuleSet>
+      <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+      <OutDir>$(SolutionDir)</OutDir>
     </PropertyGroup>
   <PropertyGroup>
     <TargetPlatform Condition="$([MSBuild]::IsOsPlatform('Windows'))">win-x64</TargetPlatform>
@@ -28,7 +30,8 @@
   <ItemGroup>
     <ProjectReference Include="..\OpenRA.Game\OpenRA.Game.csproj" />
     <PackageReference Include="OpenRA-Freetype6" Version="1.0.4" />
-    <PackageReference Include="OpenRA-OpenAL-CS" Version="1.0.16" />
+    <PackageReference Include="OpenRA-OpenAL-CS" Version="1.0.16" >
+    </PackageReference>
     <PackageReference Include="OpenRA-SDL2-CS" Version="1.0.26" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />

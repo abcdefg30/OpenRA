@@ -493,15 +493,6 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				if (Platform.CurrentPlatform != PlatformType.Windows)
 					return null;
 
-				foreach (var prefix in source.RegistryPrefixes)
-				{
-					var path = Microsoft.Win32.Registry.GetValue(prefix + source.RegistryKey, source.RegistryValue, null) as string;
-					if (path == null)
-						continue;
-
-					return IsValidSourcePath(path, source) ? path : null;
-				}
-
 				return null;
 			}
 
