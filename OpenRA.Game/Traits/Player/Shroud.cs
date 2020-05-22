@@ -207,7 +207,7 @@ namespace OpenRA.Traits
 				var dist = (map.CenterOfCell(c) - projectedPos).HorizontalLengthSquared;
 				if (dist <= maxLimit && (dist == 0 || dist > minLimit))
 				{
-					var puv = (PPos)c.ToMPos(map);
+					var puv = c.ToPPos(map);
 					if (maxHeightDelta < 0 || map.ProjectedHeight(puv) < projectedHeight + maxHeightDelta)
 						yield return puv;
 				}

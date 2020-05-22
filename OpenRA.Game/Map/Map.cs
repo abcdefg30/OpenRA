@@ -866,7 +866,7 @@ namespace OpenRA
 		public PPos ProjectedCellCovering(WPos pos)
 		{
 			var projectedPos = pos - new WVec(0, pos.Z, pos.Z);
-			return (PPos)CellContaining(projectedPos).ToMPos(Grid.Type);
+			return CellContaining(projectedPos).ToPPos(Grid.Type);
 		}
 
 		static readonly PPos[] NoProjectedCells = { };

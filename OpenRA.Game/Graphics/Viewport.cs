@@ -367,8 +367,8 @@ namespace OpenRA.Graphics
 			var map = worldRenderer.World.Map;
 
 			// Calculate the projected cell position at the corners of the visible area
-			var tl = (PPos)map.CellContaining(worldRenderer.ProjectedPosition(TopLeft)).ToMPos(map);
-			var br = (PPos)map.CellContaining(worldRenderer.ProjectedPosition(BottomRight)).ToMPos(map);
+			var tl = map.CellContaining(worldRenderer.ProjectedPosition(TopLeft)).ToPPos(map);
+			var br = map.CellContaining(worldRenderer.ProjectedPosition(BottomRight)).ToPPos(map);
 
 			// RectangularIsometric maps don't have straight edges, and so we need an additional
 			// cell margin to include the cells that are half visible on each edge.

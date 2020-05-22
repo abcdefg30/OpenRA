@@ -219,16 +219,16 @@ namespace OpenRA.Mods.Common.Traits
 
 			// If a side is shrouded then we also count the corners.
 			var edge = Edges.None;
-			if (!isVisible((PPos)(cell + new CVec(0, -1)).ToMPos(map))) edge |= Edges.Top;
-			if (!isVisible((PPos)(cell + new CVec(1, 0)).ToMPos(map))) edge |= Edges.Right;
-			if (!isVisible((PPos)(cell + new CVec(0, 1)).ToMPos(map))) edge |= Edges.Bottom;
-			if (!isVisible((PPos)(cell + new CVec(-1, 0)).ToMPos(map))) edge |= Edges.Left;
+			if (!isVisible((cell + new CVec(0, -1)).ToPPos(map))) edge |= Edges.Top;
+			if (!isVisible((cell + new CVec(1, 0)).ToPPos(map))) edge |= Edges.Right;
+			if (!isVisible((cell + new CVec(0, 1)).ToPPos(map))) edge |= Edges.Bottom;
+			if (!isVisible((cell + new CVec(-1, 0)).ToPPos(map))) edge |= Edges.Left;
 
 			var ucorner = edge & Edges.AllCorners;
-			if (!isVisible((PPos)(cell + new CVec(-1, -1)).ToMPos(map))) edge |= Edges.TopLeft;
-			if (!isVisible((PPos)(cell + new CVec(1, -1)).ToMPos(map))) edge |= Edges.TopRight;
-			if (!isVisible((PPos)(cell + new CVec(1, 1)).ToMPos(map))) edge |= Edges.BottomRight;
-			if (!isVisible((PPos)(cell + new CVec(-1, 1)).ToMPos(map))) edge |= Edges.BottomLeft;
+			if (!isVisible((cell + new CVec(-1, -1)).ToPPos(map))) edge |= Edges.TopLeft;
+			if (!isVisible((cell + new CVec(1, -1)).ToPPos(map))) edge |= Edges.TopRight;
+			if (!isVisible((cell + new CVec(1, 1)).ToPPos(map))) edge |= Edges.BottomRight;
+			if (!isVisible((cell + new CVec(-1, 1)).ToPPos(map))) edge |= Edges.BottomLeft;
 
 			// RA provides a set of frames for tiles with shrouded
 			// corners but unshrouded edges. We want to detect this
@@ -310,7 +310,7 @@ namespace OpenRA.Mods.Common.Traits
 			cellsDirty[uv] = true;
 			var cell = uv.ToCPos(map);
 			foreach (var direction in CVec.Directions)
-				if (map.Contains((PPos)(cell + direction).ToMPos(map)))
+				if (map.Contains((cell + direction).ToPPos(map)))
 					cellsDirty[cell + direction] = true;
 		}
 

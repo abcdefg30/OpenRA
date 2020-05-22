@@ -85,6 +85,22 @@ namespace OpenRA
 			return new MPos(u, v);
 		}
 
+		public PPos ToPPos(Map map)
+		{
+			return ToPPos(map.Grid.Type);
+		}
+
+		// PERF: This is a copy of ToMPos to save conversions from MPos to PPos
+		public PPos ToPPos(MapGridType gridType)
+		{
+			if (gridType == MapGridType.Rectangular)
+				return new PPos(X, Y);
+
+			var u = (X - Y) / 2;
+			var v = X + Y;
+			return new PPos(u, v);
+		}
+
 		#region Scripting interface
 
 		public LuaValue Add(LuaRuntime runtime, LuaValue left, LuaValue right)
