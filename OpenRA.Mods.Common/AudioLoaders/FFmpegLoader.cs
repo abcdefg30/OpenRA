@@ -10,9 +10,9 @@
 #endregion
 
 using System;
-using System.Diagnostics;
 using System.IO;
-using ff
+using FFMpegCore;
+using FFMpegCore.Pipes;
 
 namespace OpenRA.Mods.Common.AudioLoaders
 {
@@ -22,23 +22,31 @@ namespace OpenRA.Mods.Common.AudioLoaders
 		{
 			try
 			{
-				var mediaInfo = FFProbe.Analyse(inputFile);
-				/*var ffmpeg = new Process()
+				using (var audioStream = new MemoryStream())
 				{
-					StartInfo =
+					var source = FFMpegArguments.FromPipe(new StreamPipeSource(stream)).ForceFormat("wav");
+					var processor = source.OutputToPipe(new StreamPipeSink(audioStream));
+					if (processor.ProcessSynchronously(false))
 					{
-						FileName = "ffmpeg.exe",
-						CreateNoWindow = true,
-						UseShellExecute = false,
-						RedirectStandardInput = true,
-						RedirectStandardOutput = true,
-						Arguments = "-i {0}".F(filename)
+						audioStream.Position = 0;
+						var bytes = audioStream.ReadAllBytes();
+
+						// Using RIFF:
+						// Problem: dataSize is set to -1
+						// dataSize is at locations 40-43
+						// The length of the header is 44 bytes
+						// For some reason this is using a different header structure in my test files, figure this out
+						var size = bytes.Length - 78;
+						bytes[74] = (byte)(size >> 24);
+						bytes[75] = (byte)(size >> 16);
+						bytes[76] = (byte)(size >> 8);
+						bytes[77] = (byte)size;
+
+						var x = new MemoryStream(bytes);
+						var asd = new WavLoader();
+						return ((ISoundLoader)asd).TryParseSound(x, out sound, filename);
 					}
-				};
-
-				ffmpeg.Start();
-
-				ffmpeg.WaitForExit();*/
+				}
 			}
 			catch
 			{
@@ -56,20 +64,28 @@ namespace OpenRA.Mods.Common.AudioLoaders
 		int ISoundFormat.SampleBits { get { return bits; } }
 		int ISoundFormat.SampleRate { get { return rate; } }
 		float ISoundFormat.LengthInSeconds { get { return length; } }
+		Stream ISoundFormat.GetPCMInputStream() { return audioStream; }
 
-		int channels;
-		int bits;
-		int rate;
-		float length;
+		readonly int channels;
+		readonly int bits;
+		readonly int rate;
+		readonly float length;
+		readonly Stream audioStream;
+
+		public FFmpegFileStream(MediaAnalysis info, Stream audioStream, float lengthInSeconds)
+		{
+			channels = info.PrimaryAudioStream.Channels;
+			bits = info.PrimaryAudioStream.BitRate;
+			rate = info.PrimaryAudioStream.SampleRateHz;
+			length = lengthInSeconds;
+
+			audioStream.Position = 0;
+			this.audioStream = audioStream;
+		}
 
 		void IDisposable.Dispose()
 		{
-			throw new NotImplementedException();
-		}
-
-		Stream ISoundFormat.GetPCMInputStream()
-		{
-			throw new NotImplementedException();
+			audioStream.Dispose();
 		}
 	}
 }
