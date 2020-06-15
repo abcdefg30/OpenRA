@@ -19,7 +19,7 @@ namespace OpenRA.Mods.Cnc.AudioLoaders
 {
 	public class VocLoader : ISoundLoader
 	{
-		bool ISoundLoader.TryParseSound(Stream stream, out ISoundFormat sound)
+		bool ISoundLoader.TryParseSound(Stream stream, out ISoundFormat sound, string filename)
 		{
 			try
 			{

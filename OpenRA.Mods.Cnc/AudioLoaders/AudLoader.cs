@@ -31,7 +31,7 @@ namespace OpenRA.Mods.Cnc.AudioLoaders
 			return Enum.IsDefined(typeof(SoundFormat), readFormat);
 		}
 
-		bool ISoundLoader.TryParseSound(Stream stream, out ISoundFormat sound)
+		bool ISoundLoader.TryParseSound(Stream stream, out ISoundFormat sound, string filename)
 		{
 			try
 			{

@@ -51,7 +51,7 @@ namespace OpenRA.GameRules
 				foreach (var loader in Game.ModData.SoundLoaders)
 				{
 					ISoundFormat soundFormat;
-					if (loader.TryParseSound(stream, out soundFormat))
+					if (loader.TryParseSound(stream, out soundFormat, Filename))
 					{
 						Length = (int)soundFormat.LengthInSeconds;
 						soundFormat.Dispose();

@@ -20,7 +20,7 @@ namespace OpenRA
 {
 	public interface ISoundLoader
 	{
-		bool TryParseSound(Stream stream, out ISoundFormat sound);
+		bool TryParseSound(Stream stream, out ISoundFormat sound, string filename);
 	}
 
 	public interface ISoundFormat : IDisposable
@@ -70,7 +70,7 @@ namespace OpenRA
 				foreach (var loader in loaders)
 				{
 					stream.Position = 0;
-					if (loader.TryParseSound(stream, out soundFormat))
+					if (loader.TryParseSound(stream, out soundFormat, filename))
 					{
 						var source = loadFormat(soundFormat);
 						soundFormat.Dispose();

@@ -28,7 +28,7 @@ namespace OpenRA.Mods.Common.AudioLoaders
 			return type == "RIFF" && format == "WAVE";
 		}
 
-		bool ISoundLoader.TryParseSound(Stream stream, out ISoundFormat sound)
+		bool ISoundLoader.TryParseSound(Stream stream, out ISoundFormat sound, string filename)
 		{
 			try
 			{
