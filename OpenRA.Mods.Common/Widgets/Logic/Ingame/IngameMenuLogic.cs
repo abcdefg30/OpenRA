@@ -203,7 +203,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 		void CreateRestartButton()
 		{
-			if (world.Type != WorldType.Regular || !isSinglePlayer)
+			if (world.Type != WorldType.Regular || (!isSinglePlayer && !world.IsReplay))
 				return;
 
 			var iop = world.WorldActor.TraitsImplementing<IObjectivesPanel>().FirstOrDefault();
