@@ -28,11 +28,10 @@ VOLK:
 		Voice: Action
 	AttackFrontal:
 		Voice: Action
+		GuardVoice: Action
 	AttackMove:
 		Voice: Action
 	Passenger:
-		Voice: Action
-	Guard:
 		Voice: Action
 	Voiced:
 		VoiceSet: GenericVoice

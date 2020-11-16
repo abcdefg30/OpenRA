@@ -565,6 +565,7 @@ TSLA:
 		ChargeAudio: tslachg2.aud
 		MaxCharges: 3
 		ReloadDelay: 120
+		CanGuard: false
 	Power:
 		Amount: -100
 	DetectCloaked:
@@ -615,6 +616,7 @@ AGUN:
 	AttackTurreted:
 		RequiresCondition: !build-incomplete
 		PauseOnCondition: disabled
+		CanGuard: false
 	WithMuzzleOverlay:
 	RenderRangeCircle:
 		RangeCircleType: aa
@@ -722,6 +724,7 @@ PBOX:
 		PortOffsets: 384,0,128, 224,-341,128, -224,-341,128, -384,0,128, -224,341,128, 224,341,128
 		PortYaws: 0, 176, 341, 512, 682, 853
 		PortCones: 88, 88, 88, 88, 88, 88
+		CanGuard: false
 	RenderRangeCircle:
 		FallbackRange: 6c0
 	Power:
@@ -788,6 +791,7 @@ HBOX:
 		PortOffsets: 384,0,128, 224,-341,128, -224,-341,128, -384,0,128, -224,341,128, 224,341,128
 		PortYaws: 0, 176, 341, 512, 682, 853
 		PortCones: 88, 88, 88, 88, 88, 88
+		CanGuard: false
 	Power:
 		Amount: -20
 	-MustBeDestroyed:
@@ -833,6 +837,7 @@ GUN:
 		MuzzleSequence: muzzle
 	AttackTurreted:
 		RequiresCondition: !build-incomplete
+		CanGuard: false
 	WithMuzzleOverlay:
 	Power:
 		Amount: -40
@@ -874,6 +879,7 @@ FTUR:
 		LocalOffset: 512,0,0
 	AttackTurreted:
 		RequiresCondition: !build-incomplete
+		CanGuard: false
 	-QuantizeFacingsFromSequence:
 	BodyOrientation:
 		QuantizedFacings: 8
@@ -936,6 +942,7 @@ SAM:
 	AttackTurreted:
 		RequiresCondition: !build-incomplete
 		PauseOnCondition: disabled
+		CanGuard: false
 	WithMuzzleOverlay:
 	RenderRangeCircle:
 		RangeCircleType: aa

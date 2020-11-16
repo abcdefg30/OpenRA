@@ -54,6 +54,13 @@ namespace OpenRA.Mods.Common.Traits
 		[Desc("Tolerance for attack angle. Range [0, 128], 128 covers 360 degrees.")]
 		public readonly int FacingTolerance = 128;
 
+		[Desc("Can this actor guard other actors?")]
+		public readonly bool CanGuard = true;
+
+		[VoiceReference]
+		[Desc("Voice to use when issuing a guard order.")]
+		public readonly string GuardVoice = "Action";
+
 		public override void RulesetLoaded(Ruleset rules, ActorInfo ai)
 		{
 			base.RulesetLoaded(rules, ai);
@@ -79,10 +86,12 @@ namespace OpenRA.Mods.Common.Traits
 		protected IPositionable positionable;
 		protected INotifyAiming[] notifyAiming;
 		protected Func<IEnumerable<Armament>> getArmaments;
+		protected Mobile mobile;
 
 		readonly Actor self;
 
 		bool wasAiming;
+		IMove move;
 
 		public AttackBase(Actor self, AttackBaseInfo info)
 			: base(info)
@@ -95,6 +104,8 @@ namespace OpenRA.Mods.Common.Traits
 			facing = self.TraitOrDefault<IFacing>();
 			positionable = self.TraitOrDefault<IPositionable>();
 			notifyAiming = self.TraitsImplementing<INotifyAiming>().ToArray();
+			move = self.TraitOrDefault<IMove>();
+			mobile = move as Mobile;
 
 			getArmaments = InitializeGetArmaments(self);
 
@@ -152,7 +163,6 @@ namespace OpenRA.Mods.Common.Traits
 			if (!HasAnyValidWeapons(target))
 				return false;
 
-			var mobile = self.TraitOrDefault<Mobile>();
 			if (mobile != null && !mobile.CanInteractWithGroundLayer(self))
 				return false;
 
@@ -207,6 +217,18 @@ namespace OpenRA.Mods.Common.Traits
 			}
 			else if (order.OrderString == "Stop")
 				OnStopOrder(self);
+			else if (order.OrderString == "Guard" && Info.CanGuard)
+			{
+				if (order.Target.Type != TargetType.Actor)
+					return;
+
+				var guardable = order.Target.Actor.Info.TraitInfoOrDefault<GuardableInfo>();
+				if (guardable == null)
+					return;
+
+				self.QueueActivity(order.Queued, new AttackMoveActivity(self, () => move.MoveFollow(self, order.Target, WDist.Zero, guardable.Range, targetLineColor: Color.OrangeRed)));
+				self.ShowTargetLines();
+			}
 		}
 
 		// Some 3rd-party mods rely on this being public
@@ -223,6 +245,9 @@ namespace OpenRA.Mods.Common.Traits
 
 		string IOrderVoice.VoicePhraseForOrder(Actor self, Order order)
 		{
+			if (order.OrderString == "Guard")
+				return Info.GuardVoice;
+
 			return order.OrderString == attackOrderName || order.OrderString == forceAttackOrderName ? Info.Voice : null;
 		}
 

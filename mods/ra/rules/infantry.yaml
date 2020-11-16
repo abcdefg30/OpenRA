@@ -22,8 +22,6 @@ DOG:
 		Speed: 99
 		Voice: Move
 		PauseOnCondition: attack-cooldown || eating
-	Guard:
-		Voice: Move
 	Passenger:
 		Voice: Move
 	RevealsShroud:
@@ -35,6 +33,7 @@ DOG:
 	AttackLeap:
 		Voice: Attack
 		PauseOnCondition: attacking || attack-cooldown
+		GuardVoice: Move
 	AttackMove:
 		Voice: Move
 	GrantConditionOnAttack:
@@ -305,7 +304,8 @@ SPY:
 		GenericName: Soldier
 	UpdatesPlayerStatistics:
 		AddToArmyValue: true
-	-Guard:
+	AttackFrontal:
+		CanGuard: false
 	Mobile:
 		Voice: Move
 	RevealsShroud:
@@ -377,8 +377,8 @@ E7:
 	Mobile:
 		Speed: 71
 		Voice: Move
-	Guard:
-		Voice: Move
+	AttackFrontal:
+		GuardVoice: Move
 	RevealsShroud:
 		Range: 6c0
 	Demolition:
@@ -479,6 +479,7 @@ MECH:
 		ForceTargetStances: None
 	AttackFrontal:
 		Voice: Action
+		CanGuard: false
 	CaptureManager:
 	Captures:
 		CaptureTypes: husk
@@ -537,11 +538,10 @@ GNRL:
 		Voice: Move
 	AttackFrontal:
 		Voice: Attack
+		GuardVoice: Move
 	AttackMove:
 		Voice: Move
 	Passenger:
-		Voice: Move
-	Guard:
 		Voice: Move
 	Voiced:
 		VoiceSet: StavrosVoice
@@ -634,11 +634,10 @@ SHOK:
 		ProneOffset: 227,0,-245
 	AttackFrontal:
 		Voice: Attack
+		GuardVoice: Move
 	AttackMove:
 		Voice: Move
 	Passenger:
-		Voice: Move
-	Guard:
 		Voice: Move
 	WithInfantryBody:
 		DefaultAttackSequence: shoot

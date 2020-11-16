@@ -736,6 +736,7 @@ DTRK:
 		DamageSource: Killer
 	AttackFrontal:
 		FacingTolerance: 128
+		CanGuard: false
 	Armament@PRIMARY:
 		Weapon: DemoTruckTargeting
 	GrantConditionOnAttack:

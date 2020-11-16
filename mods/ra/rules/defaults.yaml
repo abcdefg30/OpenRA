@@ -266,7 +266,6 @@
 	GpsDot:
 		String: Vehicle
 	WithDamageOverlay:
-	Guard:
 	Guardable:
 	Tooltip:
 		GenericName: Vehicle
@@ -364,7 +363,6 @@
 		String: Infantry
 	Crushable:
 		CrushSound: squishy2.aud
-	Guard:
 	Guardable:
 	Tooltip:
 		GenericName: Soldier
@@ -514,7 +512,6 @@
 	Explodes:
 		Weapon: UnitExplodeShip
 		EmptyWeapon: UnitExplodeShip
-	Guard:
 	Guardable:
 	Tooltip:
 		GenericName: Ship
@@ -559,7 +556,6 @@
 	HiddenUnderFog:
 		Type: GroundPosition
 	AttackMove:
-	Guard:
 	Guardable:
 	ActorLostNotification:
 		Notification: AirUnitLost

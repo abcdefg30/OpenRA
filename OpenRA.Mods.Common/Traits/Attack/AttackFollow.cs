@@ -39,7 +39,6 @@ namespace OpenRA.Mods.Common.Traits
 		public Target RequestedTarget { get; private set; }
 		public Target OpportunityTarget { get; private set; }
 
-		Mobile mobile;
 		AutoTarget autoTarget;
 		bool requestedForceAttack;
 		Activity requestedTargetPresetForActivity;
@@ -74,7 +73,6 @@ namespace OpenRA.Mods.Common.Traits
 
 		protected override void Created(Actor self)
 		{
-			mobile = self.TraitOrDefault<Mobile>();
 			autoTarget = self.TraitOrDefault<AutoTarget>();
 			base.Created(self);
 		}
