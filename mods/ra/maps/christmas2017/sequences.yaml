@@ -1,0 +1,32 @@
+pileofcrates:
+	idle:
+		Offset: 0, -12
+
+e7:
+	idle-overlay: kappe
+
+tesla2:
+	idle:
+		Offset: 0,-13
+
+tesla3:
+	idle: tesla2
+		Offset: 0,-13
+		Start: 1
+
+star:
+	idle:
+		Offset: 4,-13
+		ZOffset: 1024
+		Length: 4
+		Tick: 120
+
+sleigh:
+	idle:
+
+dog:
+	Defaults: doga
+
+explosion:
+	med_explosion: flak
+	

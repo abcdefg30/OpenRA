@@ -1,0 +1,71 @@
+World:
+	LuaScript:
+		Scripts: christmas.lua
+
+pileofcrates:
+	Inherits: PBOX
+	-WithBuildingBib:
+	-WithMakeAnimation:
+	-Buildable:
+	ExternalCondition@silence-warnings:
+		Condition: build-incomplete
+
+sleigh:
+	Inherits: APC
+	-Buildable:
+	# silence warnings
+	Armament:
+		MuzzleSequence: idle
+
+tesla2:
+	Inherits: TSLA
+	-WithBuildingBib:
+	-WithMakeAnimation:
+	-Buildable:
+	-WithTeslaChargeAnimation:
+	ExternalCondition@silence-warnings:
+		Condition: build-incomplete
+
+^Palettes:
+	PaletteFromRGBA@invuln3:
+		Name: invuln3
+		R: 0
+		G: 128
+		B: 128
+		A: 128
+	PaletteFromRGBA@invuln4:
+		Name: invuln4
+		R: 0
+		G: 128
+		B: 0
+		A: 128
+
+tesla3:
+	Inherits: tesla2
+	ExternalCondition@lua1:
+		Condition: con1
+	ExternalCondition@lua2:
+		Condition: con2
+	ExternalCondition@lua3:
+		Condition: con3
+	ExternalCondition@lua4:
+		Condition: con4
+	WithColoredOverlay@con1:
+		RequiresCondition: con1
+		Palette: invuln
+	WithColoredOverlay@con2:
+		RequiresCondition: con2
+		Palette: invuln2
+	WithColoredOverlay@con3:
+		RequiresCondition: con3
+		Palette: invuln3
+	WithColoredOverlay@con4:
+		RequiresCondition: con4
+		Palette: invuln4
+
+E7:
+	WithIdleOverlay@kappe:
+		Offset: 0,0,740
+
+star:
+	Inherits: tesla2
