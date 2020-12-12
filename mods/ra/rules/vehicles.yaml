@@ -239,6 +239,8 @@ V2RL:
 		Prerequisites: vehicles.upgraded
 	Selectable:
 		DecorationBounds: 44,38,0,-4
+	WithIdleOverlay:
+		Sequence: hat
 
 ARTY:
 	Inherits: ^TrackedVehicle
