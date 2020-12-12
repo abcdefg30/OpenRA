@@ -1,0 +1,18 @@
+santa:
+	Defaults: sleigh
+	idle:
+		Length: 4
+		Tick: 80
+		Offset: -25,-4
+
+dog:
+	idle:
+		Start: 68
+		Length: 6
+		Tick: 80
+
+doga:
+	idle: doga
+		Start: 68
+		Length: 6
+		Tick: 80
