@@ -1,0 +1,196 @@
+World:
+	WeatherOverlay:
+		ChangingWindLevel: true
+		WindLevels: -5, -3, -2, 0, 2, 3, 5
+		WindTick: 150, 550
+		InstantWindChanges: false
+		UseSquares: true
+		ParticleSize: 1, 3
+		ScatterDirection: -1, 1
+		Gravity: 1.00, 2.00
+		SwingOffset: 1.0, 1.5
+		SwingSpeed: 0.001, 0.025
+		SwingAmplitude: 1.0, 1.5
+		ParticleColors: ECECEC, E4E4E4, D0D0D0, BCBCBC
+		LineTailAlphaValue: 0
+	GlobalLightingPaletteEffect:
+		Red: 0.9
+		Green: 0.9
+		Blue: 1.0
+		Ambient: 0.8
+	LuaScript:
+		Scripts: christmas.lua
+
+SANTA:
+	Inherits: BADR
+	-Contrail@1:
+	-Contrail@2:
+	Hovers:
+	-WithShadow:
+
+pileofcrates:
+	Inherits: PBOX
+	-WithBuildingBib:
+	-WithMakeAnimation:
+	-Buildable:
+	ExternalCondition@silence-warnings:
+		Condition: build-incomplete
+
+tesla2:
+	Inherits: TSLA
+	-WithBuildingBib:
+	-WithMakeAnimation:
+	-Buildable:
+	-WithTeslaChargeAnimation:
+	ExternalCondition@silence-warnings:
+		Condition: build-incomplete
+
+^Palettes:
+	PaletteFromRGBA@invuln3:
+		Name: invuln3
+		R: 0
+		G: 128
+		B: 128
+		A: 128
+	PaletteFromRGBA@invuln4:
+		Name: invuln4
+		R: 0
+		G: 128
+		B: 0
+		A: 128
+
+tesla3:
+	Inherits: tesla2
+	ExternalCondition@lua1:
+		Condition: con1
+	ExternalCondition@lua2:
+		Condition: con2
+	ExternalCondition@lua3:
+		Condition: con3
+	ExternalCondition@lua4:
+		Condition: con4
+	WithColoredOverlay@con1:
+		RequiresCondition: con1
+		Palette: invuln
+	WithColoredOverlay@con2:
+		RequiresCondition: con2
+		Palette: invuln2
+	WithColoredOverlay@con3:
+		RequiresCondition: con3
+		Palette: invuln3
+	WithColoredOverlay@con4:
+		RequiresCondition: con4
+		Palette: invuln4
+
+GNRL:
+	WithIdleOverlay@kappe:
+		Offset: 0,0,740
+
+star:
+	Inherits: tesla2
+
+4TNK:
+	WithIdleOverlay:
+		Sequence: hat
+
+WEAP:
+	-WithProductionDoorOverlay:
+	WithIdleOverlay:
+		Sequence: roof
+
+^BaseWorld:
+	TerrainLighting:
+
+INGALITE:
+	Interactable:
+	EditorOnlyTooltip:
+		Name: (Invisible Light Post Template)
+	AlwaysVisible:
+	Immobile:
+		OccupiesSpace: false
+	RenderSpritesEditorOnly:
+		Image: waypoint
+	WithSpriteBody:
+	BodyOrientation:
+		QuantizedFacings: 1
+	MapEditorData:
+		Categories: System
+	RequiresSpecificOwners:
+		ValidOwnerNames: Neutral
+
+INYELWLAMP:
+	Inherits: INGALITE
+	EditorOnlyTooltip:
+		Name: (Invisible Yellow Light Post)
+	TerrainLightSource:
+		Range: 2c640
+		Intensity: 0.01
+		RedTint: 0.7
+		GreenTint: 0.7
+		BlueTint: 0.01
+
+INGRNLMP:
+	Inherits: INGALITE
+	EditorOnlyTooltip:
+		Name: (Invisible Green Light Post)
+	TerrainLightSource:
+		Range: 2c640
+		Intensity: 0.01
+		RedTint: 0.01
+		GreenTint: 0.7
+		BlueTint: 0.01
+
+INREDLMP:
+	Inherits: INGALITE
+	EditorOnlyTooltip:
+		Name: (Invisible Red Light Post)
+	TerrainLightSource:
+		Range: 2c640
+		Intensity: 0.01
+		RedTint: 1.2
+		GreenTint: 0.01
+		BlueTint: 0.01
+
+INBLULMP:
+	Inherits: INGALITE
+	EditorOnlyTooltip:
+		Name: (Invisible Blue Light Post)
+	TerrainLightSource:
+		Range: 2c640
+		Intensity: 0.01
+		RedTint: 0.01
+		GreenTint: 0.01
+		BlueTint: 0.7
+
+WeapLight:
+	Inherits: INGALITE
+	EditorOnlyTooltip:
+		Name: (Used for weap)
+	TerrainLightSource:
+		Range: 3c240
+		Intensity: 0.01
+		RedTint: 0.4
+		GreenTint: 0.4
+		BlueTint: 0.4
+
+StarLight:
+	Inherits: INGALITE
+	EditorOnlyTooltip:
+		Name: (Used for tree star)
+	TerrainLightSource:
+		Range: 2c240
+		Intensity: 0.01
+		RedTint: 0.4
+		GreenTint: 0.4
+		BlueTint: 0.3
+
+SmallYellowLight:
+	Inherits: INGALITE
+	EditorOnlyTooltip:
+		Name: (Yellow Shine)
+	TerrainLightSource:
+		Range: 1c640
+		Intensity: 0.1
+		RedTint: 0.4
+		GreenTint: 0.4
+		BlueTint: 0.1

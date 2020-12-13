@@ -1,0 +1,295 @@
+MapFormat: 11
+
+RequiresMod: ra
+
+Title: Christmas 2020
+
+Author: abcdefg30
+
+Tileset: SNOW
+
+MapSize: 66,66
+
+Bounds: 1,1,64,64
+
+Visibility: Lobby
+
+Categories: Conquest
+
+Players:
+	PlayerReference@Neutral:
+		Name: Neutral
+		OwnsWorld: True
+		NonCombatant: True
+		Faction: england
+	PlayerReference@Creeps:
+		Name: Creeps
+		NonCombatant: True
+		Faction: england
+	PlayerReference@USSR:
+		Name: USSR
+		Faction: ukraine
+		LockColor: True
+		Color: FE1100
+
+Actors:
+	Actor79: hosp
+		Owner: Neutral
+		Location: 16,25
+	Building2: v03
+		Owner: Neutral
+		Location: 19,26
+		Health: 100
+	Actor81: utilpol1
+		Owner: Neutral
+		Location: 12,27
+	Actor137: t08
+		Owner: Neutral
+		Location: 18,27
+	Actor138: t16
+		Owner: Neutral
+		Location: 10,28
+	Actor139: v11
+		Owner: Neutral
+		Location: 15,29
+		Health: 100
+	Actor140: v08
+		Owner: Neutral
+		Health: 100
+		Location: 21,29
+	Actor141: v07
+		Owner: Neutral
+		Location: 24,29
+		Health: 100
+	Actor142: v01
+		Owner: Neutral
+		Location: 23,30
+	Building3: v02
+		Owner: Neutral
+		Location: 26,30
+		Health: 100
+	Actor144: t17
+		Owner: Neutral
+		Location: 31,29
+	Building5: snowhut
+		Owner: Neutral
+		Location: 12,31
+		Health: 100
+	Actor146: v12
+		Owner: Neutral
+		Location: 19,31
+	Actor147: v10
+		Owner: Neutral
+		Location: 30,31
+		Health: 100
+	Actor148: utilpol1
+		Owner: Neutral
+		Location: 17,32
+	Building4: v06
+		Owner: Neutral
+		Location: 18,33
+		Health: 100
+	Actor150: utilpol1
+		Owner: Neutral
+		Location: 22,33
+		Health: 100
+	Actor151: t08
+		Owner: Neutral
+		Location: 23,33
+	Actor152: v04
+		Owner: Neutral
+		Location: 24,33
+		Health: 100
+	Actor153: utilpol1
+		Owner: Neutral
+		Location: 28,33
+	Actor154: v13
+		Owner: Neutral
+		Location: 30,33
+	Actor155: tc03
+		Owner: Neutral
+		Location: 22,35
+	Actor156: ant
+		Owner: Neutral
+		Facing: 384
+		Location: 22,35
+	Actor158: utilpol1
+		Owner: Neutral
+		Location: 33,35
+	Actor159: t13
+		Owner: Neutral
+		Location: 13,36
+	Actor160: tc01
+		Owner: Neutral
+		Location: 29,24
+	Actor162: brik
+		Owner: Neutral
+		Location: 36,31
+	Actor163: brik
+		Owner: Neutral
+		Location: 36,30
+	Actor165: brik
+		Owner: Neutral
+		Location: 36,29
+	Actor166: brik
+		Owner: Neutral
+		Location: 36,28
+	Actor167: brik
+		Owner: Neutral
+		Location: 36,27
+	Actor168: brik
+		Owner: Neutral
+		Location: 36,26
+	Actor169: brik
+		Owner: Neutral
+		Location: 36,25
+	Actor170: brik
+		Owner: Neutral
+		Location: 36,24
+	Actor171: brik
+		Owner: Neutral
+		Location: 36,32
+	Actor172: brik
+		Owner: Neutral
+		Location: 36,36
+	Actor173: brik
+		Owner: Neutral
+		Location: 36,37
+	Actor174: brik
+		Owner: Neutral
+		Location: 36,38
+	Actor175: miss
+		Owner: USSR
+		Location: 42,37
+		Health: 100
+	Spawn: waypoint
+		Owner: Neutral
+		Location: 60,32
+	Drop: waypoint
+		Owner: Neutral
+		Location: 21,32
+	Center: waypoint
+		Owner: Neutral
+		Location: 28,32
+	Actor177: tesla2
+		Owner: USSR
+		Location: 38,36
+		Health: 100
+	Actor178: tesla2
+		Owner: USSR
+		Location: 38,31
+	TeslaB: tesla3
+		Owner: USSR
+		Location: 38,36
+		Health: 100
+	TeslaA: tesla3
+		Owner: USSR
+		Location: 38,31
+		Health: 100
+	GrenA: e2
+		Owner: USSR
+		SubCell: 3
+		Location: 41,36
+		Health: 100
+		Facing: 384
+	GrenB: e2
+		Owner: USSR
+		SubCell: 3
+		Location: 45,36
+		Health: 100
+		Facing: 384
+	Actor53: apwr
+		Owner: USSR
+		Location: 15,53
+	Actor54: apwr
+		Owner: USSR
+		Location: 18,53
+	Actor55: apwr
+		Owner: USSR
+		Location: 21,53
+	Actor56: apwr
+		Owner: USSR
+		Location: 24,53
+	Actor57: apwr
+		Owner: USSR
+		Location: 15,56
+	Actor58: apwr
+		Owner: USSR
+		Location: 18,56
+	Actor59: apwr
+		Owner: USSR
+		Location: 21,56
+	Actor60: apwr
+		Owner: USSR
+		Location: 24,56
+	Actor64: weap
+		Owner: USSR
+		Location: 41,27
+	Actor65: 4tnk
+		Owner: USSR
+		Location: 42,31
+		Health: 100
+		Facing: 512
+	Actor61: star
+		Owner: USSR
+		Location: 47,32
+	Actor62: gnrl
+		SubCell: 3
+		Health: 100
+		Facing: 384
+		Owner: Neutral
+		Location: 45,33
+	Actor63: shok
+		Faction: england
+		SubCell: 1
+		Health: 100
+		Facing: 384
+		Owner: USSR
+		Location: 45,33
+	Actor66: shok
+		Faction: england
+		SubCell: 2
+		Health: 100
+		Facing: 384
+		Owner: USSR
+		Location: 45,33
+	Actor67: t06
+		Owner: Neutral
+		Location: 47,32
+	Actor68: pileofcrates
+		Owner: USSR
+		Location: 47,34
+	Actor69: starlight
+		Owner: Neutral
+		Location: 47,32
+	Actor72: smallyellowlight
+		Owner: Neutral
+		Location: 43,38
+	Building1: v11
+		Owner: Neutral
+		Location: 28,35
+		Health: 100
+	Actor71: t16
+		Owner: Neutral
+		Location: 32,37
+	Actor73: t02
+		Owner: Neutral
+		Location: 33,28
+	Actor74: kenn
+		Owner: USSR
+		Location: 48,28
+	Actor76: brik
+		Owner: Neutral
+		Location: 36,39
+	Actor77: brik
+		Owner: Neutral
+		Location: 36,40
+	Actor78: weaplight
+		Owner: Neutral
+		Location: 42,28
+
+Rules: rules.yaml
+
+Sequences: sequences.yaml
+
+Weapons: weapons.yaml

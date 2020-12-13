@@ -1,0 +1,11 @@
+Grenade:
+	-Report:
+	Range: 7c0
+	Projectile:
+		Speed: 236
+		Inaccuracy: 554
+	Warhead@1Dam: SpreadDamage
+		Damage: 0
+	-Warhead@2Smu:
+	Warhead@3Eff: CreateEffect
+		-ImpactSounds:
