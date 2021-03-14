@@ -131,8 +131,17 @@ namespace OpenRA.Mods.Common.Traits
 		public Bridge Neighbour(int direction) { return neighbours[direction]; }
 		public IEnumerable<Bridge> Enumerate(int direction, bool includeSelf = false)
 		{
-			for (var b = includeSelf ? this : neighbours[direction]; b != null; b = b.neighbours[direction])
-				yield return b;
+			var neighbors = new HashSet<Bridge>();
+			var b = includeSelf ? this : neighbours[direction];
+			while (b != null)
+			{
+				if (!neighbors.Add(b))
+					throw new InvalidOperationException("Bridge at {0} is causing an infinite loop.".F(b.self.Location));
+
+				b = b.neighbours[direction];
+			}
+
+			return neighbours;
 		}
 
 		public void Do(Action<Bridge, int> action)
