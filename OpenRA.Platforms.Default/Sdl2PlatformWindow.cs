@@ -345,7 +345,8 @@ namespace OpenRA.Platforms.Default
 					hotspot *= 2;
 				}
 
-				return new Sdl2HardwareCursor(size, data, hotspot);
+				var cursor = new Sdl2HardwareCursor(size, data, hotspot);
+				return cursor.Cursor == IntPtr.Zero ? null : cursor;
 			}
 			catch (Exception ex)
 			{

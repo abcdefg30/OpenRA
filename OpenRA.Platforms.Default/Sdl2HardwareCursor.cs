@@ -43,11 +43,11 @@ namespace OpenRA.Platforms.Default
 				Marshal.Copy(data, 0, sur.pixels, data.Length);
 
 				// This call very occasionally fails on Windows, but often works when retried.
-				for (var retries = 0; retries < 3 && Cursor == IntPtr.Zero; retries++)
-					Cursor = SDL.SDL_CreateColorCursor(surface, hotspot.X, hotspot.Y);
+				// for (var retries = 0; retries < 3 && Cursor == IntPtr.Zero; retries++)
+				Cursor = SDL.SDL_CreateColorCursor(surface, hotspot.X, hotspot.Y);
 
-				if (Cursor == IntPtr.Zero)
-					throw new Sdl2HardwareCursorException($"Failed to create cursor: {SDL.SDL_GetError()}");
+				// if (Cursor == IntPtr.Zero)
+				// throw new Sdl2HardwareCursorException($"Failed to create cursor: {SDL.SDL_GetError()}");
 			}
 			catch
 			{

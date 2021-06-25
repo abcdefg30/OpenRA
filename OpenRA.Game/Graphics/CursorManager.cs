@@ -121,6 +121,10 @@ namespace OpenRA.Graphics
 					try
 					{
 						template.Cursors[i] = CreateHardwareCursor(kv.Key, template.Sprites[i], paddingTL, paddingBR, -template.Bounds.Location);
+						if (template.Cursors[i] == null)
+						{
+							Console.WriteLine("Failed to initialize hardware cursor for {0}.", template.Name);
+						}
 					}
 					catch (Exception e)
 					{
