@@ -123,7 +123,12 @@ namespace OpenRA.Graphics
 						template.Cursors[i] = CreateHardwareCursor(kv.Key, template.Sprites[i], paddingTL, paddingBR, -template.Bounds.Location);
 						if (template.Cursors[i] == null)
 						{
-							Console.WriteLine("Failed to initialize hardware cursor for {0}.", template.Name);
+							Console.WriteLine("Failed to initialize hardware cursor for {0} index {1}.", template.Name, i);
+							template.Cursors[i] = CreateHardwareCursor(kv.Key, template.Sprites[i], paddingTL, paddingBR, -template.Bounds.Location);
+							if (template.Cursors[i] == null)
+								Console.WriteLine("Failed to initialize hardware cursor2 for {0} index {1}.", template.Name, i);
+							else
+								Console.WriteLine("Succeeded to initialize hardware cursor for {0} (second attempt).", template.Name, i);
 						}
 					}
 					catch (Exception e)
