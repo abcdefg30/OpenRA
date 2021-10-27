@@ -153,7 +153,7 @@ install_windows_launcher()
 	rm -rf "${SRC_PATH}/OpenRA.WindowsLauncher/obj"
 	dotnet publish "${SRC_PATH}/OpenRA.WindowsLauncher/OpenRA.WindowsLauncher.csproj" -c Release -r "${TARGETPLATFORM}" -p:LauncherName="${LAUNCHER_NAME}" -p:TargetPlatform="${TARGETPLATFORM}" -p:ModID="${MOD_ID}" -p:DisplayName="${MOD_NAME}" -p:FaqUrl="${FAQ_URL}" -o "${DEST_PATH}" --self-contained true
 
-	# NET 5 is unable to customize the application host for windows when compiling from Linux,
+	# NET 6 is unable to customize the application host for windows when compiling from Linux,
 	# so we must patch the properties we need in the PE header.
 	# Setting the application icon requires an external tool, so is left to the calling code
 	python3 "${SRC_PATH}/packaging/windows/fixlauncher.py" "${DEST_PATH}/${LAUNCHER_NAME}.exe"

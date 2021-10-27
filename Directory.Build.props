@@ -17,8 +17,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework Condition="'$(Mono)' == ''">net5.0</TargetFramework>
+    <TargetFramework Condition="'$(Mono)' == ''">net6.0</TargetFramework>
     <TargetFramework Condition="'$(Mono)' != ''">netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
   </PropertyGroup>
 
   <PropertyGroup>
