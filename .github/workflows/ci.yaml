@@ -2,6 +2,7 @@ name: Continuous Integration
 
 on:
   push:
+    branches: [ net6 ]
   pull_request:
     branches: [ bleed ]
 
