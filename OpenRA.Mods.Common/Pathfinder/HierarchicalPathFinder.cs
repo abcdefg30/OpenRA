@@ -148,15 +148,16 @@ namespace OpenRA.Mods.Common.Pathfinder
 			/// Returns null when the local cell is unreachable.
 			/// Pass a null <paramref name="hpf"/> to skip cost checks if the caller already checked.
 			/// </summary>
-			public CPos? AbstractCellForLocalCell(CPos localCell, HierarchicalPathFinder hpf)
+			public CPos? AbstractCellForLocalCell(CPos localCell, HierarchicalPathFinder hpf, bool ignoreAccessability = false)
 			{
 				var abstractCell = singleAbstractCellForLayer[localCell.Layer];
 				if (abstractCell != null)
 				{
 					// All reachable cells in the grid are joined together so only a single abstract cell was needed,
 					// but there may be unreachable cells in the grid which we must exclude.
-					if (hpf != null && !hpf.CellIsAccessible(localCell))
+					if (hpf != null && !ignoreAccessability && !hpf.CellIsAccessible(localCell))
 						return null;
+
 					return abstractCell;
 				}
 
@@ -827,7 +828,7 @@ namespace OpenRA.Mods.Common.Pathfinder
 			var targetAbstractCell = AbstractCellForLocalCell(target);
 			if (targetAbstractCell == null)
 				return PathFinder.NoPath;
-			var sourceAbstractCell = AbstractCellForLocalCell(source);
+			var sourceAbstractCell = AbstractCellForLocalCell(source, true);
 			if (sourceAbstractCell == null)
 				return PathFinder.NoPath;
 			var targetEdge = EdgeFromLocalToAbstract(target, targetAbstractCell.Value);
@@ -1006,9 +1007,9 @@ namespace OpenRA.Mods.Common.Pathfinder
 		/// <summary>
 		/// Maps a local cell to a abstract node in the graph. Returns null when the local cell is unreachable.
 		/// </summary>
-		CPos? AbstractCellForLocalCell(CPos localCell)
+		CPos? AbstractCellForLocalCell(CPos localCell, bool ignoreAccessability = false)
 		{
-			return gridInfos[GridIndex(localCell)].AbstractCellForLocalCell(localCell, this);
+			return gridInfos[GridIndex(localCell)].AbstractCellForLocalCell(localCell, this, ignoreAccessability);
 		}
 
 		/// <summary>
